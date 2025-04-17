@@ -1,16 +1,14 @@
 {
   "kind": "collectionType",
-  "collectionName": "words",
+  "collectionName": "wordclouds",
   "info": {
-    "singularName": "word",
-    "pluralName": "words",
-    "displayName": "Word",
-    "description": "Word cloud data for the homepage"
+    "singularName": "wordcloud",
+    "pluralName": "wordclouds",
+    "displayName": "WordCloud"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
-  "pluginOptions": {},
   "attributes": {
     "text": {
       "type": "string",
@@ -19,7 +17,6 @@
     },
     "value": {
       "type": "integer",
-      "required": true,
       "default": 10,
       "min": 1
     }

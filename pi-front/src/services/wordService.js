@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_URL, isUsingMockApi } from "../config.js";
 
 // This is the Strapi endpoint for our Word collection
-const WORDS_ENDPOINT = `${API_URL}/api/words`;
+const WORDS_ENDPOINT = `${API_URL}/api/wordclouds`;
 
 // Use localStorage as backup storage when the API is not available
 const initializeLocalStorage = () => {
@@ -49,8 +49,8 @@ export const getAllWords = async () => {
         Array.isArray(response.data.data)
       ) {
         const transformedWords = response.data.data.map((item) => ({
-          text: item.attributes.text,
-          value: item.attributes.value,
+          text: item.text,
+          value: item.value,
         }));
         console.log("Transformed words data:", transformedWords);
         return transformedWords;

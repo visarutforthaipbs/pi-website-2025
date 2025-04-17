@@ -399,23 +399,25 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiWordWord extends Struct.CollectionTypeSchema {
-  collectionName: 'words';
+export interface ApiWordcloudWordcloud extends Struct.CollectionTypeSchema {
+  collectionName: 'wordclouds';
   info: {
-    description: 'Word cloud data for the homepage';
-    displayName: 'Word';
-    pluralName: 'words';
-    singularName: 'word';
+    displayName: 'WordCloud';
+    pluralName: 'wordclouds';
+    singularName: 'wordcloud';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::word.word'> &
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::wordcloud.wordcloud'
+    > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     text: Schema.Attribute.String &
@@ -425,7 +427,6 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     value: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
           min: 1;
@@ -946,7 +947,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::post.post': ApiPostPost;
-      'api::word.word': ApiWordWord;
+      'api::wordcloud.wordcloud': ApiWordcloudWordcloud;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
