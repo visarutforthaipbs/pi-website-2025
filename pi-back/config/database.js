@@ -1,7 +1,7 @@
 // const path = require("path"); // No longer needed for SQLite path
 
 module.exports = ({ env }) => {
-  const client = env("DATABASE_CLIENT", "sqlite");
+  const client = env("DATABASE_CLIENT", "postgres");
 
   const connections = {
     mysql: {
@@ -29,9 +29,11 @@ module.exports = ({ env }) => {
         database: env("DATABASE_NAME", "strapi"),
         user: env("DATABASE_USERNAME", "strapi"),
         password: env("DATABASE_PASSWORD", "strapi"),
-        ssl: {
-          rejectUnauthorized: false,
-        },
+        ssl: env.bool("DATABASE_SSL", true)
+          ? {
+              rejectUnauthorized: false,
+            }
+          : false,
       },
       pool: {
         min: env.int("DATABASE_POOL_MIN", 2),
