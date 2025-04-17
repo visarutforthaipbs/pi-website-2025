@@ -12,16 +12,17 @@
     "postinstall": "npm install --platform=linux --arch=x64 sharp"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "4.15.5",
-    "@strapi/plugin-i18n": "4.15.5",
-    "@strapi/plugin-users-permissions": "4.15.5",
-    "@strapi/strapi": "4.15.5",
+    "@strapi/plugin-cloud": "5.10.2",
+    "@strapi/plugin-i18n": "5.10.2",
+    "@strapi/plugin-users-permissions": "5.10.2",
+    "@strapi/strapi": "5.10.2",
+    "better-sqlite3": "^8.6.0",
     "ajv": "^8.12.0",
-    "pg": "^8.11.3",
+    "pg": "8.11.3",
     "pg-connection-string": "^2.6.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "5.3.4",
     "styled-components": "5.3.3",
     "yalc": "^1.0.0-pre.53"
   },
