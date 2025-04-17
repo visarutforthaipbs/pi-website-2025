@@ -2,7 +2,7 @@ services:
   - type: web
     name: pi-website-backend
     env: node
-    buildCommand: npm install --legacy-peer-deps && NODE_ENV=production npm run build
+    buildCommand: NODE_ENV=production npm install && NODE_ENV=production npm run build
     startCommand: npm start
     autoDeploy: true
     envVars:
