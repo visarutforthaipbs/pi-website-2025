@@ -8,7 +8,8 @@
     "deploy": "strapi deploy",
     "develop": "strapi develop",
     "start": "strapi start",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "postinstall": "npm install --platform=linux --arch=x64 sharp"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "4.15.5",
