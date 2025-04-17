@@ -28,6 +28,8 @@ module.exports = [
         "http://localhost:5178",
         "http://localhost:5179",
         "http://localhost:5180",
+        "https://pi-website-2025.onrender.com",
+        "https://pi-website-frontend.onrender.com",
       ],
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       keepHeaderOnError: true,

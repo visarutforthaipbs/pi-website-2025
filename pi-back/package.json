@@ -9,7 +9,7 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
-    "postinstall": "npm install --platform=linux --arch=x64 sharp"
+    "bootstrap": "node bootstrap.js"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "4.15.5",
@@ -24,6 +24,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "5.3.4",
     "styled-components": "5.3.3",
+    "sharp": "^0.32.6",
     "yalc": "^1.0.0-pre.53"
   },
   "devDependencies": {
