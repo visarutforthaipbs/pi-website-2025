@@ -1,0 +1,97 @@
+.footer {
+  background: var(--main-color);
+  color: white;
+  padding: 15px 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+.footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.footer-left .footer-logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.footer-center a {
+  margin: 0 10px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.footer-center a:hover {
+  color: white;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.footer-right a {
+  margin: 0 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.footer-right a:hover {
+  color: var(--highlight-color);
+}
+
+.footer-right .social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-right .social-icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease;
+}
+
+.footer-right .social-icons a:hover {
+  background: var(--highlight-color);
+}
+
+.subscribe-btn {
+  background: var(--secondary-color);
+  color: white;
+  padding: 5px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  border-radius: 6px;
+  font-family: prompt;
+}
+
+.subscribe-btn:hover {
+  background: var(--highlight-color);
+}
+.footer-logo {
+  width: 40px;
+  height: 40px;
+  display: block;
+}

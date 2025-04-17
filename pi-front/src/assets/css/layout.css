@@ -1,0 +1,4 @@
+/* Add margin to prevent content from being overlapped by navbar */
+body {
+  padding-top: 80px; /* Adjust to match navbar height */
+}
