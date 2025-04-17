@@ -2,7 +2,7 @@ services:
   - type: web
     name: pi-website-backend
     env: node
-    buildCommand: npm install --legacy-peer-deps && npm run build
+    buildCommand: npm install --legacy-peer-deps && NODE_ENV=production npm run build
     startCommand: npm start
     autoDeploy: true
     envVars:
@@ -22,6 +22,8 @@ services:
         fromDatabase:
           name: pi-website-db
           property: connectionString
+      - key: DATABASE_SSL
+        value: true
 
 databases:
   - name: pi-website-db
