@@ -2,7 +2,7 @@ services:
   - type: web
     name: pi-website-backend
     env: node
-    buildCommand: npm install && npm uninstall sharp && npm install --platform=linux --arch=x64 sharp && NODE_ENV=production npm run build
+    buildCommand: npm install && npm install typescript && npm uninstall sharp && npm install --platform=linux --arch=x64 sharp && NODE_ENV=production npm run build
     startCommand: npm start
     autoDeploy: true
     envVars:
