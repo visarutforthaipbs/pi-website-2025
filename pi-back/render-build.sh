@@ -6,8 +6,9 @@ set -e
 # Install dependencies
 npm install
 
-# Rebuild sharp specifically for linux
-npm rebuild --platform=linux --arch=x64 sharp
+# Remove and reinstall sharp with specific platform
+npm uninstall sharp
+npm install --platform=linux --arch=x64 sharp
 
 # Build the Strapi application
-NODE_ENV=production npm run build 
+NODE_ENV=production npm run build
