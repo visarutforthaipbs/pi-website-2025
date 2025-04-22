@@ -2,7 +2,7 @@ services:
   - type: web
     name: pi-website-backend
     env: node
-    buildCommand: NODE_ENV=production npm install && npm run build
+    buildCommand: chmod +x render-build.sh && ./render-build.sh
     startCommand: npm start
     autoDeploy: true
     envVars:
@@ -26,6 +26,12 @@ services:
           property: connectionString
       - key: DATABASE_SSL
         value: true
+      - key: CLOUDINARY_NAME
+        value: dcbeckyco
+      - key: CLOUDINARY_KEY
+        value: 993325454266224
+      - key: CLOUDINARY_SECRET
+        value: QU_9samR93xRoeLIs9JZes_RvLw
 
 databases:
   - name: pi-website-db
