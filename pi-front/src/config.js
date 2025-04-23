@@ -4,4 +4,4 @@
 export const API_URL = "http://localhost:1337";
 
 // Set to true to use mock data instead of actual API calls during development
-export const isUsingMockApi = false;
+export const isUsingMockApi = true;
