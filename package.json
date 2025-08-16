@@ -1,0 +1,19 @@
+{
+  "name": "pi-new-website-2025",
+  "version": "1.0.0",
+  "description": "PI Website 2025 - Frontend and Backend",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm start",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/visarutforthaipbs/pi-new-website-2025.git"
+  },
+  "author": "visarutforthaipbs",
+  "license": "MIT"
+}
