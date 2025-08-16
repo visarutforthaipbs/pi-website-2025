@@ -2,8 +2,8 @@ services:
   - type: web
     name: pi-website-backend
     env: node
-    rootDir: pi-back
-    buildCommand: chmod +x render-build.sh && ./render-build.sh
+    rootDir: backend
+    buildCommand: npm install
     startCommand: npm start
     autoDeploy: true
     envVars:
@@ -11,23 +11,25 @@ services:
         value: 18.17.0
       - key: NODE_ENV
         value: production
-      - key: DATABASE_CLIENT
-        value: postgres
-      - key: JWT_SECRET
-        generateValue: true
-      - key: ADMIN_JWT_SECRET
-        generateValue: true
-      - key: APP_KEYS
-        generateValue: true
-      - key: API_TOKEN_SALT
-        generateValue: true
-      - key: DATABASE_URL
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
         fromDatabase:
           name: pi-website-db
           property: connectionString
-      - key: DATABASE_SSL
-        value: true
-      - key: CLOUDINARY_NAME
+      - key: NOTION_API_KEY
+        sync: false
+      - key: NOTION_DATABASE_ID
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+
+databases:
+  - name: pi-website-db
+    databaseName: pi_website_db
+    user: pi_user
         value: dcbeckyco
       - key: CLOUDINARY_KEY
         value: 993325454266224

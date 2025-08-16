@@ -1,0 +1,99 @@
+/* DB Helvetica Thai CAX Font Family */
+
+@font-face {
+  font-family: "DB Helvetica Thai CAX";
+  src: url("./font/dbhelvethaicax-webfont.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DB Helvetica Thai CAX";
+  src: url("./font/dbhelvethaicaxmed-webfont.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DB Helvetica Thai CAX";
+  src: url("./font/dbhelvethaicaxbd-webfont.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* KulachatSlab Font for Headings */
+@font-face {
+  font-family: "KulachatSlab";
+  src: url("./font/KulachatSlab-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global font application */
+body {
+  font-family:
+    "DB Helvetica Thai CAX",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+}
+
+/* Ensure all text elements use the custom font */
+p,
+span,
+div,
+text,
+label,
+input,
+textarea,
+button {
+  font-family:
+    "DB Helvetica Thai CAX",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+}
+
+/* Headings use KulachatSlab font */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "KulachatSlab",
+    "DB Helvetica Thai CAX",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  font-weight: 700;
+}

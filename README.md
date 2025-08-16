@@ -12,23 +12,27 @@ A modern, responsive website for PI (Participatory Intelligence) showcasing proj
 ## ✨ Features
 
 ### 🎨 Interactive Word Cloud
+
 - Real-time Thai word visualization
 - Click to vote and increase word weight
 - Add new words dynamically
 - MongoDB storage for persistence
 
 ### 💰 Budget Transparency
+
 - 2568 fiscal year budget display
 - Thai Baht formatting
 - CSV-based data structure
 - Responsive tables and summaries
 
 ### 📧 Contact Form
+
 - Email notifications via Nodemailer
 - Form validation and error handling
 - Success feedback for users
 
 ### 🎯 Project Showcase
+
 - Notion CMS integration
 - Project voting system
 - Responsive gallery layout
@@ -37,42 +41,47 @@ A modern, responsive website for PI (Participatory Intelligence) showcasing proj
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - MongoDB Atlas account
 - Notion API credentials (optional)
 
 ### Development Setup
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/visarutforthaipbs/pi-new-website-2025.git
    cd pi-new-website-2025
    ```
 
 2. **Install dependencies**:
+
    ```bash
    # Backend
    cd backend && npm install
-   
+
    # Frontend
    cd ../frontend && npm install
    ```
 
 3. **Environment setup**:
+
    ```bash
    # Backend - copy and fill .env
    cp backend/.env.example backend/.env
-   
+
    # Frontend - copy and fill .env.local
    cp frontend/.env.example frontend/.env.local
    ```
 
 4. **Run development servers**:
+
    ```bash
    # Terminal 1 - Backend
    cd backend && npm start
-   
-   # Terminal 2 - Frontend  
+
+   # Terminal 2 - Frontend
    cd frontend && npm run dev
    ```
 
@@ -93,6 +102,7 @@ A modern, responsive website for PI (Participatory Intelligence) showcasing proj
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
 ### Quick Deploy
+
 1. **Backend on Render**: Deploy using render.yaml
 2. **Frontend on Vercel**: Auto-deploy from GitHub
 3. **Configure**: Set environment variables in each platform
@@ -100,6 +110,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - React 18
 - Vite
 - Chakra UI
@@ -109,6 +120,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 - Axios
 
 ### Backend
+
 - Node.js
 - Express
 - MongoDB with native driver
@@ -117,6 +129,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 - dotenv
 
 ### Development Tools
+
 - ESLint
 - Vite dev server
 - Nodemon
@@ -148,11 +161,13 @@ pi-new-website-2025/
 ### Environment Variables
 
 **Frontend (.env.local)**:
+
 ```bash
 VITE_API_URL=http://localhost:3001  # or your production backend URL
 ```
 
 **Backend (.env)**:
+
 ```bash
 NODE_ENV=development
 MONGODB_URI=your_mongodb_connection_string
@@ -176,6 +191,7 @@ MIT License - see LICENSE file for details
 ## 🆘 Support
 
 For issues and questions:
+
 - Create an issue on GitHub
 - Check [DEPLOYMENT.md](DEPLOYMENT.md) for deployment help
 - Review API documentation in the code

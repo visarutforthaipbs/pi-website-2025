@@ -1,92 +1,28 @@
-const express = require("express");
-const cors = require("cors");
-const nodemailer = require("nodemailer");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 // MongoDB imports
-const { connectToDatabase, initializeDatabase } = require("./config/database");
-const wordCloudService = require("./services/wordCloudService");
-const votingService = require("./services/votingService");
+import { connectToDatabase, initializeDatabase } from "./config/database.js";
+import wordCloudService from "./services/wordCloudService.js";
+import votingService from "./services/votingService.js";
+import commentService from "./services/commentService.js";
+import notionService from "./services/notionService.js";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-// Notion API configuration
-const NOTION_TOKEN = "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";
-const DATABASE_ID = "24e85b60e2a780988192cc3b3ab25fdf";
-const NOTION_API_BASE = "https://api.notion.com/v1";
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Helper function to format project data from Notion response
-function formatProject(project) {
-  const properties = project.properties;
-
-  return {
-    id: project.id,
-    title: getPlainText(properties.title?.title || []),
-    description: getPlainText(properties.description?.rich_text || []),
-    url: properties.URL?.url || "#",
-    thumbnail: getThumbnail(properties.thumbnail?.files || []),
-    status: properties.status?.select?.name || "active",
-    workType: properties.workType?.select?.name || "PI Project",
-    createdTime: project.created_time,
-    lastEditedTime: project.last_edited_time,
-  };
-}
-
-// Extract plain text from Notion rich text
-function getPlainText(richText) {
-  return richText.map((text) => text.plain_text).join("");
-}
-
-// Get thumbnail URL from Notion files
-function getThumbnail(files) {
-  if (files && files.length > 0) {
-    const file = files[0];
-    return file.type === "external" ? file.external.url : file.file.url;
-  }
-  return "/images/project/default-project.jpg"; // Fallback image
-}
-
 // Routes
 app.get("/api/projects", async (req, res) => {
   try {
-    const response = await fetch(
-      `${NOTION_API_BASE}/databases/${DATABASE_ID}/query`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${NOTION_TOKEN}`,
-          "Content-Type": "application/json",
-          "Notion-Version": "2022-06-28",
-        },
-        body: JSON.stringify({
-          sorts: [
-            {
-              property: "title",
-              direction: "ascending",
-            },
-          ],
-          page_size: 100,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Notion API Error ${response.status}:`, errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log(`Notion API returned ${data.results.length} results`);
-    console.log(`Has more pages: ${data.has_more}`);
-
-    const projects = data.results.map((project) => formatProject(project));
-
+    const projects = await notionService.getProjects();
     res.json({
       data: projects,
       meta: {
@@ -94,8 +30,54 @@ app.get("/api/projects", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching projects from Notion:", error);
-    res.status(500).json({ error: "Failed to fetch projects from Notion" });
+    console.error("Error fetching projects:", error);
+    res.status(500).json({
+      error: "Failed to fetch projects",
+      details: error.message,
+    });
+  }
+});
+
+// Debug endpoint to test Notion connection
+app.get("/api/projects/debug", async (req, res) => {
+  try {
+    // Test basic connection to Notion
+    const response = await fetch(
+      `https://api.notion.com/v1/databases/${process.env.NOTION_DATABASE_ID}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(400).json({
+        error: "Notion API Error",
+        status: response.status,
+        statusText: response.statusText,
+        details: errorText,
+      });
+    }
+
+    const data = await response.json();
+    res.json({
+      message: "Notion connection successful",
+      database_id: data.id,
+      title: data.title?.[0]?.plain_text || "No title",
+      properties: Object.keys(data.properties || {}),
+      property_details: data.properties,
+    });
+  } catch (error) {
+    console.error("Debug error:", error);
+    res.status(500).json({
+      error: "Debug failed",
+      details: error.message,
+    });
   }
 });
 
@@ -219,6 +201,83 @@ app.get("/api/projects/votes/all", async (req, res) => {
   } catch (error) {
     console.error("Error fetching all votes:", error);
     res.status(500).json({ error: "Failed to fetch votes data" });
+  }
+});
+
+// Comment endpoints
+// GET /api/projects/:projectId/comments - Get comments for a project
+app.get("/api/projects/:projectId/comments", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const comments = await commentService.getProjectComments(projectId);
+
+    res.json({
+      success: true,
+      data: comments,
+      total: comments.length,
+    });
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ error: "Failed to fetch comments" });
+  }
+});
+
+// POST /api/projects/:projectId/comments - Add a comment to a project
+app.post("/api/projects/:projectId/comments", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { comment, userName } = req.body;
+    const userIP = req.ip || req.connection.remoteAddress;
+
+    if (!comment || comment.trim().length === 0) {
+      return res.status(400).json({ error: "Comment cannot be empty" });
+    }
+
+    if (comment.trim().length > 500) {
+      return res
+        .status(400)
+        .json({ error: "Comment too long (max 500 characters)" });
+    }
+
+    const result = await commentService.addComment(
+      projectId,
+      comment,
+      userIP,
+      userName || "ผู้ใช้งาน"
+    );
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ error: "Failed to add comment" });
+  }
+});
+
+// POST /api/comments/:commentId/like - Like/unlike a comment
+app.post("/api/comments/:commentId/like", async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const userIP = req.ip || req.connection.remoteAddress;
+
+    const result = await commentService.likeComment(commentId, userIP);
+    res.json(result);
+  } catch (error) {
+    console.error("Error liking comment:", error);
+    res.status(500).json({ error: "Failed to like comment" });
+  }
+});
+
+// GET /api/projects/comments/stats - Get comment stats for all projects
+app.get("/api/projects/comments/stats", async (req, res) => {
+  try {
+    const stats = await commentService.getAllCommentStats();
+    res.json({
+      success: true,
+      data: stats,
+    });
+  } catch (error) {
+    console.error("Error fetching comment stats:", error);
+    res.status(500).json({ error: "Failed to fetch comment stats" });
   }
 });
 
