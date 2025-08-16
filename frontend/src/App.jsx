@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box, Flex } from "@chakra-ui/react";
 import { Suspense, lazy } from "react";
+import { HelmetProvider } from 'react-helmet-async';
 import theme from "./theme";
 
 // Essential components (loaded immediately)
@@ -43,25 +44,27 @@ const Layout = ({ children }) => (
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
-      <Router>
-        <Layout>
-          <Suspense fallback={<PageLoading />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/budget" element={<Budget />} />
-              <Route path="/events" element={<Events />} />
-              <Route path="/wordcloud" element={<Home />} />
-            </Routes>
-          </Suspense>
-        </Layout>
-      </Router>
-    </ChakraProvider>
+    <HelmetProvider>
+      <ChakraProvider theme={theme}>
+        <Router>
+          <Layout>
+            <Suspense fallback={<PageLoading />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/budget" element={<Budget />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/wordcloud" element={<Home />} />
+              </Routes>
+            </Suspense>
+          </Layout>
+        </Router>
+      </ChakraProvider>
+    </HelmetProvider>
   );
 }
 

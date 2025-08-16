@@ -36,6 +36,7 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import FloatingShapes from "./FloatingShapes";
+import SEOHead from "./SEOHead";
 
 const EventCard = ({ event, variant = "default" }) => {
   const formatEventDate = (dateString) => {
@@ -415,6 +416,13 @@ const Events = () => {
 
   return (
     <Box>
+      <SEOHead 
+        title="กิจกรรม"
+        description="ติดตามและเข้าร่วมกิจกรรม workshop สัมมนา และงานประชุมต่างๆ จาก PI Thai PBS เพื่อการเรียนรู้และแลกเปลี่ยนความคิดเห็น"
+        keywords="กิจกรรม, workshop, สัมมนา, การประชุม, PI events, Thai PBS, การเรียนรู้"
+        url="/events"
+      />
+      
       {/* Hero Section */}
       <FloatingShapes variant="hero">
         <Box bg="white" py={{ base: 16, md: 20 }} position="relative">

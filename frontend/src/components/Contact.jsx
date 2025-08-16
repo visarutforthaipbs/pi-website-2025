@@ -20,6 +20,7 @@ import {
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import { useState } from "react";
 import CONFIG from "../config.js";
+import SEOHead from "./SEOHead";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -77,7 +78,15 @@ export default function Contact() {
   };
 
   return (
-    <Box py={20} bg={useColorModeValue("primary.25", "primary.950")}>
+    <>
+      <SEOHead 
+        title="ติดต่อเรา"
+        description="ติดต่อทีม PI Thai PBS เพื่อสอบถามข้อมูล ให้ข้อเสนะแนะ หรือเสนอโครงการ พร้อมช่องทางติดต่อที่สะดวกและรวดเร็ว"
+        keywords="ติดต่อ, สอบถาม, ข้อเสนะแนะ, เสนอโครงการ, PI contact, Thai PBS"
+        url="/contact"
+      />
+      
+      <Box py={20} bg={useColorModeValue("primary.25", "primary.950")}>
       <Container maxW={"7xl"}>
         <VStack spacing={10}>
           <Stack spacing={4} textAlign={"center"}>
@@ -206,5 +215,6 @@ export default function Contact() {
         </VStack>
       </Container>
     </Box>
+    </>
   );
 }

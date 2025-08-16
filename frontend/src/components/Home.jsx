@@ -38,6 +38,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FloatingShapes from "./FloatingShapes";
 import WordCloudInput from "./WordCloudInput";
+import SEOHead from "./SEOHead";
 import CONFIG from "../config.js";
 import { blogService } from "../services/blogService";
 
@@ -777,6 +778,13 @@ export default function Home() {
 
   return (
     <Box>
+      <SEOHead 
+        title="หน้าหลัก"
+        description="แพลตฟอร์มการมีส่วนร่วมสาธารณะของไทยพีบีเอส เพื่อสร้างปัญญารวมหมู่ โหวตโครงการ แสดงความคิดเห็น และร่วมกิจกรรมเพื่อพัฒนาสังคมไทย"
+        keywords="PI, Thai PBS, การมีส่วนร่วม, โหวตโครงการ, ความคิดเห็น, ปัญญารวมหมู่, สื่อสาธารณะ"
+        url="/"
+      />
+      
       {/* Nesta-Inspired Hero Section with Floating Shapes */}
       <FloatingShapes variant="hero">
         <Box

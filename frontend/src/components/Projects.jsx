@@ -45,6 +45,7 @@ import {
 import { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import CONFIG from "../config.js";
+import SEOHead from "./SEOHead";
 
 const ProjectCard = ({
   project,
@@ -681,12 +682,20 @@ export default function Projects() {
   ];
 
   return (
-    <Box
-      py={{ base: 16, md: 20 }}
-      bg={useColorModeValue(
-        "linear(to-b, blue.50, white)",
-        "linear(to-b, gray.900, gray.800)"
-      )}
+    <>
+      <SEOHead 
+        title="โครงการ"
+        description="ชมและโหวตโครงการที่น่าสนใจจากทีม PI Thai PBS พร้อมแสดงความคิดเห็นและสนับสนุนโครงการที่คุณชื่นชอบ"
+        keywords="โครงการ, โหวต, ความคิดเห็น, PI projects, Thai PBS, การพัฒนา, นวัตกรรม"
+        url="/projects"
+      />
+      
+      <Box
+        py={{ base: 16, md: 20 }}
+        bg={useColorModeValue(
+          "linear(to-b, blue.50, white)",
+          "linear(to-b, gray.900, gray.800)"
+        )}
       minH="100vh"
     >
       <Container maxW={"7xl"}>
@@ -869,5 +878,6 @@ export default function Projects() {
         </VStack>
       </Container>
     </Box>
+    </>
   );
 }
