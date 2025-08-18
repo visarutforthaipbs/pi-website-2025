@@ -16,6 +16,8 @@ import {
   Tooltip,
   SimpleGrid,
   Flex,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import CONFIG from "../config.js";
@@ -33,7 +35,9 @@ const WordCloudInput = () => {
 
   const fetchWords = async () => {
     try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.WORD_CLOUD}`);
+      const response = await fetch(
+        `${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.WORD_CLOUD}`
+      );
       if (response.ok) {
         const data = await response.json();
         // Transform the Strapi-like structure to simple format
@@ -68,15 +72,18 @@ const WordCloudInput = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.WORD_CLOUD}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: inputValue.trim(),
-        }),
-      });
+      const response = await fetch(
+        `${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.WORD_CLOUD}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: inputValue.trim(),
+          }),
+        }
+      );
 
       if (response.ok) {
         toast({
