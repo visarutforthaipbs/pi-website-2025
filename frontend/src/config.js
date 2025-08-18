@@ -8,6 +8,7 @@ export const CONFIG = {
 
   API_ENDPOINTS: {
     PROJECTS: "/api/projects",
+    EVENTS: "/api/events",
     WORD_CLOUD: "/api/wordclouds",
     CONTACT: "/api/contact",
     HEALTH: "/health",

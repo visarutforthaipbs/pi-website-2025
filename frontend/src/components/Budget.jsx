@@ -491,7 +491,7 @@ const Budget = () => {
               fontWeight="bold"
               textShadow="0 2px 4px rgba(0,0,0,0.3)"
             >
-              งบประมาณ PI Website ปี {budgetData?.year}
+              งบประมาณ PI ปี {budgetData?.year}
             </Heading>
             <Text
               fontSize="xl"
@@ -500,9 +500,9 @@ const Budget = () => {
               lineHeight="tall"
               textShadow="0 1px 2px rgba(0,0,0,0.2)"
             >
-              เพื่อความโปร่งใสและความไว้วางใจจากประชาชน
-              เราเปิดเผยการใช้งบประมาณจากภาษีของประชาชน เพื่อพัฒนาแพลทฟอร์ม
-              Public Intelligence และกิจกรรมต่างๆ
+              ทีม PI
+              ทำงานภายใต้โครงการพัฒนาระบบการสื่อสารและบริการด้วยปัญญารวมหมู่
+              สังกัดสำนักเครือข่ายและการมีส่วนร่วมสาธารณะ ในไทยพีบีเอส
             </Text>
 
             <HStack spacing={8} wrap="wrap" justify="center">
@@ -786,11 +786,11 @@ const Budget = () => {
               fontWeight="bold"
               textShadow="0 1px 2px rgba(0,0,0,0.2)"
             >
-              ข้อมูลงบประมาณ Public Intelligence (PI) Website
+              ข้อมูลงบประมาณโครงการพัฒนาระบบการสื่อสารและบริการด้วยปัญญารวมหมู่
             </Text>
             <Text color="whiteAlpha.800" fontSize="md">
-              หน่วยงาน: สำนักเครือข่ายและการมีส่วนร่วมสาธารณะ
-              บริษัทสื่อสาธารณะไทย
+              หน่วยงาน: สำนักเครือข่ายและการมีส่วนร่วมสาธารณะ Thai
+              ,PBS(ไทยพีบีเอส)
             </Text>
             <HStack
               spacing={6}

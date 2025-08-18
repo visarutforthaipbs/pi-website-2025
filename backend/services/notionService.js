@@ -5,6 +5,8 @@ dotenv.config();
 
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
+const NOTION_EVENTS_DATABASE_ID =
+  process.env.NOTION_EVENTS_DATABASE_ID || "25185b60e2a780e6b7b7f45332081f3c";
 const NOTION_API_VERSION = "2022-06-28";
 
 // Create a ky instance with default headers
@@ -292,6 +294,123 @@ class NotionService {
     }
 
     return properties;
+  }
+
+  /**
+   * Fetch all events from the Notion events database
+   * @returns {Promise<Array>} Array of event objects
+   */
+  async getEvents() {
+    try {
+      if (!NOTION_API_KEY || !NOTION_EVENTS_DATABASE_ID) {
+        throw new Error("Notion API credentials not configured for events");
+      }
+
+      console.log(
+        `Fetching events from database: ${NOTION_EVENTS_DATABASE_ID}`
+      );
+
+      const response = await notionClient
+        .post(`databases/${NOTION_EVENTS_DATABASE_ID}/query`, {
+          json: {
+            page_size: 100,
+          },
+        })
+        .json();
+
+      if (!response.results || !Array.isArray(response.results)) {
+        console.error("Invalid response format:", response);
+        return [];
+      }
+
+      const events = response.results
+        .map((page) => this.transformEventPage(page))
+        .filter((event) => event !== null);
+
+      console.log(`Successfully fetched ${events.length} events`);
+      return events;
+    } catch (error) {
+      console.error("Error fetching events from Notion:", error);
+      throw new Error(`Failed to fetch events: ${error.message}`);
+    }
+  }
+
+  /**
+   * Transform a Notion page into an event object
+   * @param {Object} page - Notion page object
+   * @returns {Object|null} Event object or null if invalid
+   */
+  transformEventPage(page) {
+    try {
+      const props = page.properties;
+
+      // Extract event data with safe property access
+      const event = {
+        id: page.id,
+        title: this.extractTitle(
+          props.Title || props.Name || props.title || props.name
+        ),
+        description: this.extractRichText(
+          props.Description || props.description
+        ),
+        type: this.extractSelectProperty(props.Type || props.type) || "event",
+        date: this.extractDateProperty(props.Date || props.date),
+        time: this.extractRichText(props.Time || props.time) || "",
+        location: this.extractRichText(props.Location || props.location) || "",
+        isOnline:
+          this.extractCheckboxProperty(
+            props.IsOnline || props.isOnline || props.is_online
+          ) || false,
+        capacity: this.extractNumberProperty(props.Capacity || props.capacity),
+        registered:
+          this.extractNumberProperty(props.Registered || props.registered) || 0,
+        isFeatured:
+          this.extractCheckboxProperty(
+            props.Featured || props.featured || props.is_featured
+          ) || false,
+        status:
+          this.extractSelectProperty(props.Status || props.status) ||
+          "upcoming",
+        createdTime: page.created_time,
+        lastEditedTime: page.last_edited_time,
+        url: page.url,
+      };
+
+      // Validate required fields
+      if (!event.title || !event.date) {
+        console.warn("Event missing required fields (title or date):", event);
+        return null;
+      }
+
+      return event;
+    } catch (error) {
+      console.error("Error transforming event page:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Extract checkbox property value
+   * @param {Object} property - Notion checkbox property
+   * @returns {boolean} Checkbox value
+   */
+  extractCheckboxProperty(property) {
+    if (!property || property.type !== "checkbox") {
+      return false;
+    }
+    return property.checkbox || false;
+  }
+
+  /**
+   * Extract date property value
+   * @param {Object} property - Notion date property
+   * @returns {string|null} Date string or null
+   */
+  extractDateProperty(property) {
+    if (!property || property.type !== "date" || !property.date) {
+      return null;
+    }
+    return property.date.start;
   }
 }
 

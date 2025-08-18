@@ -37,6 +37,7 @@ import {
 import { useState, useEffect } from "react";
 import FloatingShapes from "./FloatingShapes";
 import SEOHead from "./SEOHead";
+import CONFIG from "../config.js";
 
 const EventCard = ({ event, variant = "default" }) => {
   const formatEventDate = (dateString) => {
@@ -305,103 +306,154 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      // Mock events data - in real app, this would fetch from Notion API
-      const mockEvents = [
-        {
-          id: 1,
-          title: "Workshop: การใช้เทคโนโลจี AI เพื่อแก้ปัญหาชุมชน",
-          description:
-            "เรียนรู้วิธีการประยุกต์ใช้ปัญญาประดิษฐ์เพื่อพัฒนาโซลูชันสำหรับชุมชนท้องถิ่น พร้อมกิจกรรมปฏิบัติการจริง",
-          type: "workshop",
-          date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "13:00 - 17:00 น.",
-          location: "ห้องประชุม PI Building ชั้น 5",
-          isOnline: false,
-          capacity: 30,
-          registered: 18,
-          isFeatured: true,
-        },
-        {
-          id: 2,
-          title: "สัมมนา: นวัตกรรมเพื่อการพัฒนาที่ยั่งยืน",
-          description:
-            "แลกเปลี่ยนประสบการณ์และแนวทางการพัฒนานวัตกรรมเพื่อสังคม ร่วมกับผู้เชี่ยวชาญจากหลากหลายสาขา",
-          type: "seminar",
-          date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "09:00 - 16:00 น.",
-          location: "Online via Zoom",
-          isOnline: true,
-          capacity: 100,
-          registered: 67,
-          isFeatured: true,
-        },
-        {
-          id: 3,
-          title: "การฝึกอบรม: Data Science สำหรับนักวิจัย",
-          description:
-            "พัฒนาทักษะการวิเคราะห์ข้อมูลขั้นสูงสำหรับการวิจัยเชิงลึก ครอบคลุม Python, R, และ Machine Learning",
-          type: "training",
-          date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "10:00 - 15:00 น.",
-          location: "ห้องปฏิบัติการคอมพิวเตอร์ PI Lab",
-          isOnline: false,
-          capacity: 25,
-          registered: 12,
-          isFeatured: false,
-        },
-        {
-          id: 4,
-          title: "Conference: Future of Public Innovation",
-          description:
-            "การประชุมวิชาการระดับนานาชาติเรื่องอนาคตของนวัตกรรมภาครัฐ พบกับวิทยากรชั้นนำจากทั่วโลก",
-          type: "conference",
-          date: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "08:30 - 17:30 น.",
-          location: "Royal Orchid Sheraton Hotel",
-          isOnline: false,
-          capacity: 200,
-          registered: 156,
-          isFeatured: true,
-        },
-        {
-          id: 5,
-          title: "Webinar: Digital Transformation ในภาครัฐ",
-          description:
-            "เรียนรู้แนวทางการปรับเปลี่ยนองค์กรภาครัฐสู่ยุคดิจิทัล พร้อมเคสศึกษาจากประเทศต่างๆ",
-          type: "webinar",
-          date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "14:00 - 16:00 น.",
-          location: "Facebook Live",
-          isOnline: true,
-          capacity: 500,
-          registered: 234,
-          isFeatured: false,
-        },
-        {
-          id: 6,
-          title: "Workshop: UX/UI Design สำหรับ Gov Tech",
-          description:
-            "ปรับปรุงประสบการณ์ผู้ใช้ในบริการภาครัฐด้วยหลักการ Design Thinking",
-          type: "workshop",
-          date: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
-          time: "09:00 - 17:00 น.",
-          location: "Design Lab PI Building",
-          isOnline: false,
-          capacity: 20,
-          registered: 8,
-          isFeatured: false,
-        },
-      ];
+      console.log("Fetching events from API...");
 
-      setEvents(mockEvents);
-      setFeaturedEvents(mockEvents.filter((event) => event.isFeatured));
-    } catch (err) {
-      console.error("Error fetching events:", err);
+      const response = await fetch(
+        `${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.EVENTS}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Events API response:", data);
+
+      if (data.data && Array.isArray(data.data)) {
+        const eventsData = data.data;
+        setEvents(eventsData);
+
+        // Set featured events
+        const featured = eventsData
+          .filter((event) => event.isFeatured)
+          .slice(0, 2);
+        if (featured.length === 0 && eventsData.length > 0) {
+          // If no events marked as featured, use first 2 upcoming events
+          const upcoming = eventsData
+            .filter(
+              (event) =>
+                event.status === "upcoming" || new Date(event.date) > new Date()
+            )
+            .slice(0, 2);
+          setFeaturedEvents(upcoming);
+        } else {
+          setFeaturedEvents(featured);
+        }
+
+        console.log(
+          `Successfully loaded ${eventsData.length} events, ${featured.length} featured`
+        );
+      } else {
+        console.error("Invalid API response format:", data);
+        setEvents([]);
+        setFeaturedEvents([]);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
       setEvents([]);
       setFeaturedEvents([]);
+
+      // Optional: Set some fallback mock data for development
+      if (process.env.NODE_ENV === "development") {
+        console.log("Setting fallback mock data for development");
+        setMockData();
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fallback mock data function for development
+  const setMockData = () => {
+    const mockEvents = [
+      {
+        id: 1,
+        title: "Workshop: การใช้เทคโนโลจี AI เพื่อแก้ปัญหาชุมชน",
+        description:
+          "เรียนรู้วิธีการประยุกต์ใช้ปัญญาประดิษฐ์เพื่อพัฒนาโซลูชันสำหรับชุมชนท้องถิ่น พร้อมกิจกรรมปฏิบัติการจริง",
+        type: "workshop",
+        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "13:00 - 17:00 น.",
+        location: "ห้องประชุม PI Building ชั้น 5",
+        isOnline: false,
+        capacity: 30,
+        registered: 18,
+        isFeatured: true,
+      },
+      {
+        id: 2,
+        title: "สัมมนา: นวัตกรรมเพื่อการพัฒนาที่ยั่งยืน",
+        description:
+          "แลกเปลี่ยนประสบการณ์และแนวทางการพัฒนานวัตกรรมเพื่อสังคม ร่วมกับผู้เชี่ยวชาญจากหลากหลายสาขา",
+        type: "seminar",
+        date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "09:00 - 16:00 น.",
+        location: "Online via Zoom",
+        isOnline: true,
+        capacity: 100,
+        registered: 67,
+        isFeatured: true,
+      },
+      {
+        id: 3,
+        title: "การฝึกอบรม: Data Science สำหรับนักวิจัย",
+        description:
+          "พัฒนาทักษะการวิเคราะห์ข้อมูลขั้นสูงสำหรับการวิจัยเชิงลึก ครอบคลุม Python, R, และ Machine Learning",
+        type: "training",
+        date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "10:00 - 15:00 น.",
+        location: "ห้องปฏิบัติการคอมพิวเตอร์ PI Lab",
+        isOnline: false,
+        capacity: 25,
+        registered: 12,
+        isFeatured: false,
+      },
+      {
+        id: 4,
+        title: "Conference: Future of Public Innovation",
+        description:
+          "การประชุมวิชาการระดับนานาชาติเรื่องอนาคตของนวัตกรรมภาครัฐ พบกับวิทยากรชั้นนำจากทั่วโลก",
+        type: "conference",
+        date: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "08:30 - 17:30 น.",
+        location: "Royal Orchid Sheraton Hotel",
+        isOnline: false,
+        capacity: 200,
+        registered: 156,
+        isFeatured: true,
+      },
+      {
+        id: 5,
+        title: "Webinar: Digital Transformation ในภาครัฐ",
+        description:
+          "เรียนรู้แนวทางการปรับเปลี่ยนองค์กรภาครัฐสู่ยุคดิจิทัล พร้อมเคสศึกษาจากประเทศต่างๆ",
+        type: "webinar",
+        date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "14:00 - 16:00 น.",
+        location: "Facebook Live",
+        isOnline: true,
+        capacity: 500,
+        registered: 234,
+        isFeatured: false,
+      },
+      {
+        id: 6,
+        title: "Workshop: UX/UI Design สำหรับ Gov Tech",
+        description:
+          "ปรับปรุงประสบการณ์ผู้ใช้ในบริการภาครัฐด้วยหลักการ Design Thinking",
+        type: "workshop",
+        date: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
+        time: "09:00 - 17:00 น.",
+        location: "Design Lab PI Building",
+        isOnline: false,
+        capacity: 20,
+        registered: 8,
+        isFeatured: false,
+      },
+    ];
+
+    setEvents(mockEvents);
+    setFeaturedEvents(mockEvents.filter((event) => event.isFeatured));
   };
 
   const filteredEvents = events.filter((event) => {
@@ -416,13 +468,13 @@ const Events = () => {
 
   return (
     <Box>
-      <SEOHead 
+      <SEOHead
         title="กิจกรรม"
         description="ติดตามและเข้าร่วมกิจกรรม workshop สัมมนา และงานประชุมต่างๆ จาก PI Thai PBS เพื่อการเรียนรู้และแลกเปลี่ยนความคิดเห็น"
         keywords="กิจกรรม, workshop, สัมมนา, การประชุม, PI events, Thai PBS, การเรียนรู้"
         url="/events"
       />
-      
+
       {/* Hero Section */}
       <FloatingShapes variant="hero">
         <Box bg="white" py={{ base: 16, md: 20 }} position="relative">

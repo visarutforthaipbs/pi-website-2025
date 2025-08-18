@@ -38,6 +38,25 @@ app.get("/api/projects", async (req, res) => {
   }
 });
 
+// Events endpoint
+app.get("/api/events", async (req, res) => {
+  try {
+    const events = await notionService.getEvents();
+    res.json({
+      data: events,
+      meta: {
+        total: events.length,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({
+      error: "Failed to fetch events",
+      details: error.message,
+    });
+  }
+});
+
 // Debug endpoint to test Notion connection
 app.get("/api/projects/debug", async (req, res) => {
   try {
