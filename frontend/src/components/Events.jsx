@@ -156,18 +156,23 @@ const EventCard = ({ event, variant = "default" }) => {
                 <HStack spacing={3} align="center">
                   <Icon as={FaUsers} color="gray.400" boxSize={4} />
                   <Text fontSize="sm" color="gray.600" fontWeight="500">
-                    {event.registered || 0}/{event.capacity} คน
+                    จำกัด {event.capacity} คน
                   </Text>
                 </HStack>
               )}
             </VStack>
 
             <Button
+              as="a"
+              href={event.registered || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               colorScheme={colorScheme}
               size="lg"
               w="full"
               rightIcon={<FaArrowRight />}
               mt={4}
+              isDisabled={!event.registered}
               _hover={{
                 transform: "translateY(-2px)",
                 boxShadow: "lg",
@@ -272,12 +277,17 @@ const EventCard = ({ event, variant = "default" }) => {
             </VStack>
 
             <Button
+              as="a"
+              href={event.registered || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               size="sm"
               colorScheme={colorScheme}
               variant="ghost"
               rightIcon={<FaArrowRight />}
               fontWeight="600"
               alignSelf="flex-start"
+              isDisabled={!event.registered}
               _hover={{
                 bg: `${colorScheme}.50`,
               }}
