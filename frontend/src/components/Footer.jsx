@@ -3,12 +3,13 @@ import {
   Container,
   Stack,
   Text,
-  Link,
+  Link as ChakraLink,
   HStack,
   VStack,
   Divider,
   Image,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { FaFacebook, FaTwitter, FaYoutube, FaEnvelope } from "react-icons/fa";
 import CONFIG from "../config.js";
 
@@ -71,31 +72,34 @@ export default function Footer() {
               เมนูหลัก
             </Text>
 
-            <Link
-              href="/about"
+            <ChakraLink
+              as={Link}
+              to="/about"
               color="white"
               _hover={{ color: "#ffb200" }}
               transition="all 0.3s ease"
             >
               แนวคิดเบื้องหลังการทำงาน
-            </Link>
+            </ChakraLink>
 
-            <Link
-              href="/services"
+            <ChakraLink
+              as={Link}
+              to="/services"
               color="white"
               _hover={{ color: "#ffb200" }}
               transition="all 0.3s ease"
             >
               เราทำงานอะไรบ้าง{" "}
-            </Link>
-            <Link
-              href="/budget"
+            </ChakraLink>
+            <ChakraLink
+              as={Link}
+              to="/budget"
               color="white"
               _hover={{ color: "#ffb200" }}
               transition="all 0.3s ease"
             >
               งบประมาณ{" "}
-            </Link>
+            </ChakraLink>
           </VStack>
 
           {/* Features */}
@@ -103,14 +107,15 @@ export default function Footer() {
             <Text fontWeight="600" color="#ffb200" fontSize="md">
               แพลตฟอร์ม
             </Text>
-            <Link
+            <ChakraLink
               href="https://pi-data-diary.vercel.app/"
               color="white"
               _hover={{ color: "#ffb200" }}
               transition="all 0.3s ease"
+              isExternal
             >
               ไดอารี่ข้อมูลของทีม PI
-            </Link>
+            </ChakraLink>
           </VStack>
 
           {/* Contact & Social */}
@@ -122,7 +127,7 @@ export default function Footer() {
               {CONFIG.CONTACT.EMAIL}
             </Text>
             <HStack spacing={4}>
-              <Link
+              <ChakraLink
                 href={CONFIG.SOCIAL_MEDIA.FACEBOOK}
                 isExternal
                 color="white"
@@ -130,8 +135,8 @@ export default function Footer() {
                 transition="all 0.3s ease"
               >
                 <FaFacebook size="20px" />
-              </Link>
-              <Link
+              </ChakraLink>
+              <ChakraLink
                 href={CONFIG.SOCIAL_MEDIA.TWITTER}
                 isExternal
                 color="white"
@@ -139,8 +144,8 @@ export default function Footer() {
                 transition="all 0.3s ease"
               >
                 <FaTwitter size="20px" />
-              </Link>
-              <Link
+              </ChakraLink>
+              <ChakraLink
                 href={CONFIG.SOCIAL_MEDIA.YOUTUBE}
                 isExternal
                 color="white"
@@ -148,15 +153,15 @@ export default function Footer() {
                 transition="all 0.3s ease"
               >
                 <FaYoutube size="20px" />
-              </Link>
-              <Link
+              </ChakraLink>
+              <ChakraLink
                 href={`mailto:${CONFIG.CONTACT.EMAIL}`}
                 color="white"
                 _hover={{ color: "#ffb200" }}
                 transition="all 0.3s ease"
               >
                 <FaEnvelope size="20px" />
-              </Link>
+              </ChakraLink>
             </HStack>
           </VStack>
         </Stack>
