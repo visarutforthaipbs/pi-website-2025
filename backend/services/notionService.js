@@ -4,20 +4,29 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
+const NOTION_EVENTS_API_KEY =
+  process.env.NOTION_EVENTS_API_KEY || process.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 const NOTION_EVENTS_DATABASE_ID =
   process.env.NOTION_EVENTS_DATABASE_ID || "25185b60e2a780e6b7b7f45332081f3c";
 const NOTION_API_VERSION = "2022-06-28";
 
-// Create a ky instance with default headers
-const notionClient = ky.create({
-  prefixUrl: "https://api.notion.com/v1",
-  headers: {
-    Authorization: `Bearer ${NOTION_API_KEY}`,
-    "Notion-Version": NOTION_API_VERSION,
-    "Content-Type": "application/json",
-  },
-});
+// Create ky instances for different databases
+const createNotionClient = (apiKey) =>
+  ky.create({
+    prefixUrl: "https://api.notion.com/v1",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Notion-Version": NOTION_API_VERSION,
+      "Content-Type": "application/json",
+    },
+  });
+
+// Default client for projects
+const notionClient = createNotionClient(NOTION_API_KEY);
+
+// Events client (can use different API key)
+const eventsClient = createNotionClient(NOTION_EVENTS_API_KEY);
 
 class NotionService {
   /**
@@ -302,15 +311,18 @@ class NotionService {
    */
   async getEvents() {
     try {
-      if (!NOTION_API_KEY || !NOTION_EVENTS_DATABASE_ID) {
+      if (!NOTION_EVENTS_API_KEY || !NOTION_EVENTS_DATABASE_ID) {
         throw new Error("Notion API credentials not configured for events");
       }
 
       console.log(
         `Fetching events from database: ${NOTION_EVENTS_DATABASE_ID}`
       );
+      console.log(
+        `Using API key ending with: ...${NOTION_EVENTS_API_KEY.slice(-4)}`
+      );
 
-      const response = await notionClient
+      const response = await eventsClient
         .post(`databases/${NOTION_EVENTS_DATABASE_ID}/query`, {
           json: {
             page_size: 100,
