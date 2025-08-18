@@ -20,22 +20,19 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get("/api/projects", async (req, res) => {
-  try {
-    const projects = await notionService.getProjects();
-    res.json({
-      data: projects,
-      meta: {
-        total: projects.length,
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching projects:", error);
-    res.status(500).json({
-      error: "Failed to fetch projects",
-      details: error.message,
-    });
-  }
+app.get("/", (req, res) => {
+  res.json({ message: "PI Website Backend API" });
+});
+
+// Debug endpoint to check environment variables (temporary)
+app.get("/debug/env", (req, res) => {
+  res.json({
+    hasNotionApiKey: !!process.env.NOTION_API_KEY,
+    hasEventsApiKey: !!process.env.NOTION_EVENTS_API_KEY,
+    notionDbId: process.env.NOTION_DATABASE_ID?.slice(0, 8) + "...",
+    eventsDbId: process.env.NOTION_EVENTS_DATABASE_ID?.slice(0, 8) + "...",
+    nodeEnv: process.env.NODE_ENV,
+  });
 });
 
 // Events endpoint

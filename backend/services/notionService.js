@@ -359,38 +359,44 @@ class NotionService {
       // Extract event data with safe property access
       const event = {
         id: page.id,
-        title: this.extractTitle(
-          props.Title || props.Name || props.title || props.name
+        title: this.getPropertyValue(
+          props["Title/Name"] ||
+            props.Title ||
+            props.Name ||
+            props.title ||
+            props.name
         ),
-        description: this.extractRichText(
+        description: this.getPropertyValue(
           props.Description || props.description
         ),
-        type: this.extractSelectProperty(props.Type || props.type) || "event",
-        date: this.extractDateProperty(props.Date || props.date),
-        time: this.extractRichText(props.Time || props.time) || "",
-        location: this.extractRichText(props.Location || props.location) || "",
+        type: this.getPropertyValue(props.Type || props.type) || "event",
+        date: this.getPropertyValue(props.Date || props.date),
+        time: this.getPropertyValue(props.Time || props.time) || "",
+        location: this.getPropertyValue(props.Location || props.location) || "",
         isOnline:
-          this.extractCheckboxProperty(
+          this.getPropertyValue(
             props.IsOnline || props.isOnline || props.is_online
           ) || false,
-        capacity: this.extractNumberProperty(props.Capacity || props.capacity),
+        capacity:
+          this.getPropertyValue(props.Capacity || props.capacity) || null,
         registered:
-          this.extractNumberProperty(props.Registered || props.registered) || 0,
+          this.getPropertyValue(props.Registered || props.registered) || 0,
         isFeatured:
-          this.extractCheckboxProperty(
+          this.getPropertyValue(
             props.Featured || props.featured || props.is_featured
           ) || false,
         status:
-          this.extractSelectProperty(props.Status || props.status) ||
-          "upcoming",
+          this.getPropertyValue(
+            props["Event status"] || props.Status || props.status
+          ) || "upcoming",
         createdTime: page.created_time,
         lastEditedTime: page.last_edited_time,
         url: page.url,
       };
 
       // Validate required fields
-      if (!event.title || !event.date) {
-        console.warn("Event missing required fields (title or date):", event);
+      if (!event.title) {
+        console.warn("Event missing required title field:", event);
         return null;
       }
 
@@ -399,30 +405,6 @@ class NotionService {
       console.error("Error transforming event page:", error);
       return null;
     }
-  }
-
-  /**
-   * Extract checkbox property value
-   * @param {Object} property - Notion checkbox property
-   * @returns {boolean} Checkbox value
-   */
-  extractCheckboxProperty(property) {
-    if (!property || property.type !== "checkbox") {
-      return false;
-    }
-    return property.checkbox || false;
-  }
-
-  /**
-   * Extract date property value
-   * @param {Object} property - Notion date property
-   * @returns {string|null} Date string or null
-   */
-  extractDateProperty(property) {
-    if (!property || property.type !== "date" || !property.date) {
-      return null;
-    }
-    return property.date.start;
   }
 }
 
