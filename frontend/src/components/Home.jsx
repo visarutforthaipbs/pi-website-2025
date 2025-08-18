@@ -720,7 +720,6 @@ export default function Home() {
   const fetchUpcomingEvents = async () => {
     try {
       setLoadingEvents(true);
-      console.log("🔄 Fetching events from API...");
 
       // Fetch events from the real API
       const response = await fetch(
@@ -732,11 +731,8 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log("📥 API Response:", data);
 
       if (data.data && Array.isArray(data.data)) {
-        console.log("📅 Raw events data:", data.data);
-
         // Filter and sort upcoming events (events with date >= today)
         const now = new Date();
         const today = new Date(
@@ -744,21 +740,15 @@ export default function Home() {
           now.getMonth(),
           now.getDate()
         );
-        console.log("📆 Current date:", today);
 
         const upcoming = data.data
           .filter((event) => {
             if (!event.date) return false;
             const eventDate = new Date(event.date);
-            console.log(
-              `🔍 Checking event "${event.title}": ${event.date} -> ${eventDate} >= ${today}?`,
-              eventDate >= today
-            );
             return eventDate >= today;
           })
           .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        console.log("✅ Filtered upcoming events:", upcoming);
         setUpcomingEvents(upcoming);
       } else {
         console.warn("No events data received from API");
