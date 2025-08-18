@@ -54,6 +54,25 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
+// Projects endpoint
+app.get("/api/projects", async (req, res) => {
+  try {
+    const projects = await notionService.getProjects();
+    res.json({
+      data: projects,
+      meta: {
+        total: projects.length,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    res.status(500).json({
+      error: "Failed to fetch projects",
+      details: error.message,
+    });
+  }
+});
+
 // Debug endpoint to test Notion connection
 app.get("/api/projects/debug", async (req, res) => {
   try {
