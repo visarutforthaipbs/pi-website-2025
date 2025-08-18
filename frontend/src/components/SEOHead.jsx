@@ -9,7 +9,7 @@ const SEOHead = ({
   type = "website",
   noIndex = false,
 }) => {
-  const siteTitle = "PI - Participatory Intelligence | Thai PBS";
+  const siteTitle = "PI - Public Intelligence | Thai PBS";
   const siteDescription =
     "แพลตฟอร์มการมีส่วนร่วมสาธารณะของไทยพีบีเอส สำหรับการสร้างปัญญารวมหมู่และการพัฒนาสังคม";
   const baseUrl = "https://pi-website.vercel.app";
@@ -55,7 +55,7 @@ const SEOHead = ({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "PI - Participatory Intelligence",
+          name: "PI - Public Intelligence",
           alternateName: "Thai PBS PI",
           url: baseUrl,
           logo: `${baseUrl}/logo/pi-logo.svg`,

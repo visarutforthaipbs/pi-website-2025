@@ -332,13 +332,13 @@ const EventCard = ({ event }) => {
   const getEventTypeColor = (type) => {
     switch (type?.toLowerCase()) {
       case "workshop":
-        return "blue";
+        return "primary";
       case "seminar":
-        return "purple";
+        return "secondary";
       case "conference":
-        return "green";
+        return "accent";
       case "training":
-        return "orange";
+        return "primary";
       default:
         return "primary";
     }
@@ -720,54 +720,50 @@ export default function Home() {
   const fetchUpcomingEvents = async () => {
     try {
       setLoadingEvents(true);
-      // Mock upcoming events data
-      // In a real application, this would fetch from an API
-      setUpcomingEvents([
-        {
-          id: 1,
-          title: "Workshop: การใช้เทคโนโลジี AI เพื่อแก้ปัญหาชุมชน",
-          description:
-            "เรียนรู้วิธีการประยุกต์ใช้ปัญญาประดิษฐ์เพื่อพัฒนาโซลูชันสำหรับชุมชนท้องถิ่น",
-          type: "workshop",
-          date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
-          time: "13:00 - 17:00 น.",
-          location: "ห้องประชุม PI Building ชั้น 5",
-          isOnline: false,
-        },
-        {
-          id: 2,
-          title: "สัมมนา: นวัตกรรมเพื่อการพัฒนาที่ยั่งยืน",
-          description:
-            "แลกเปลี่ยนประสบการณ์และแนวทางการพัฒนานวัตกรรมเพื่อสังคม",
-          type: "seminar",
-          date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
-          time: "09:00 - 16:00 น.",
-          location: "Online via Zoom",
-          isOnline: true,
-        },
-        {
-          id: 3,
-          title: "การฝึกอบรม: Data Science สำหรับนักวิจัย",
-          description:
-            "พัฒนาทักษะการวิเคราะห์ข้อมูลขั้นสูงสำหรับการวิจัยเชิงลึก",
-          type: "training",
-          date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(), // 21 days from now
-          time: "10:00 - 15:00 น.",
-          location: "ห้องปฏิบัติการคอมพิวเตอร์ PI Lab",
-          isOnline: false,
-        },
-        {
-          id: 4,
-          title: "Conference: Future of Public Innovation",
-          description:
-            "การประชุมวิชาการระดับนานาชาติเรื่องอนาคตของนวัตกรรมภาครัฐ",
-          type: "conference",
-          date: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(), // 28 days from now
-          time: "08:30 - 17:30 น.",
-          location: "Royal Orchid Sheraton Hotel",
-          isOnline: false,
-        },
-      ]);
+      console.log("🔄 Fetching events from API...");
+
+      // Fetch events from the real API
+      const response = await fetch(
+        `${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.EVENTS}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch events: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("📥 API Response:", data);
+
+      if (data.data && Array.isArray(data.data)) {
+        console.log("📅 Raw events data:", data.data);
+
+        // Filter and sort upcoming events (events with date >= today)
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        console.log("📆 Current date:", today);
+
+        const upcoming = data.data
+          .filter((event) => {
+            if (!event.date) return false;
+            const eventDate = new Date(event.date);
+            console.log(
+              `🔍 Checking event "${event.title}": ${event.date} -> ${eventDate} >= ${today}?`,
+              eventDate >= today
+            );
+            return eventDate >= today;
+          })
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        console.log("✅ Filtered upcoming events:", upcoming);
+        setUpcomingEvents(upcoming);
+      } else {
+        console.warn("No events data received from API");
+        setUpcomingEvents([]);
+      }
     } catch (err) {
       console.error("Error fetching upcoming events:", err);
       setUpcomingEvents([]);
@@ -778,13 +774,13 @@ export default function Home() {
 
   return (
     <Box>
-      <SEOHead 
+      <SEOHead
         title="หน้าหลัก"
         description="แพลตฟอร์มการมีส่วนร่วมสาธารณะของไทยพีบีเอส เพื่อสร้างปัญญารวมหมู่ โหวตโครงการ แสดงความคิดเห็น และร่วมกิจกรรมเพื่อพัฒนาสังคมไทย"
         keywords="PI, Thai PBS, การมีส่วนร่วม, โหวตโครงการ, ความคิดเห็น, ปัญญารวมหมู่, สื่อสาธารณะ"
         url="/"
       />
-      
+
       {/* Nesta-Inspired Hero Section with Floating Shapes */}
       <FloatingShapes variant="hero">
         <Box
@@ -976,7 +972,7 @@ export default function Home() {
                   lineHeight="1.8"
                   fontWeight="400"
                 >
-                  อ่านบทความล่าสุดเกี่ยวกับนวัตกรรม เทคโนโลジี
+                  อ่านบทความล่าสุดเกี่ยวกับนวัตกรรม เทคโนโลยี
                   และการพัฒนาสังคมจากทีมงาน PI และผู้เชี่ยวชาญ
                 </Text>
               </VStack>

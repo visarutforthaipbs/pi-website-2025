@@ -38,7 +38,15 @@ import {
 } from "react-icons/fa";
 import FloatingShapes from "./FloatingShapes";
 
-const ServiceCard = ({ icon, title, description, features, color }) => {
+const ServiceCard = ({
+  icon,
+  title,
+  description,
+  features,
+  color,
+  ctaUrl,
+  ctaText,
+}) => {
   return (
     <Card
       bg="white"
@@ -53,6 +61,8 @@ const ServiceCard = ({ icon, title, description, features, color }) => {
       border="1px solid"
       borderColor="gray.100"
       h="full"
+      display="flex"
+      flexDirection="column"
     >
       <CardHeader pb={2}>
         <VStack spacing={4}>
@@ -79,8 +89,8 @@ const ServiceCard = ({ icon, title, description, features, color }) => {
           </Heading>
         </VStack>
       </CardHeader>
-      <CardBody pt={0}>
-        <VStack spacing={4} align="start">
+      <CardBody pt={0} flex="1" display="flex" flexDirection="column">
+        <VStack spacing={4} align="start" flex="1">
           <Text
             color="gray.600"
             fontSize="md"
@@ -90,7 +100,7 @@ const ServiceCard = ({ icon, title, description, features, color }) => {
             {description}
           </Text>
           <Divider />
-          <VStack spacing={3} align="start" w="full">
+          <VStack spacing={3} align="start" w="full" flex="1">
             {features.map((feature, index) => (
               <HStack key={index} spacing={3} align="start">
                 <Icon
@@ -105,6 +115,29 @@ const ServiceCard = ({ icon, title, description, features, color }) => {
               </HStack>
             ))}
           </VStack>
+
+          {ctaUrl && ctaText && (
+            <>
+              <Divider mt={4} />
+              <Button
+                as="a"
+                href={ctaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                colorScheme={color}
+                size="lg"
+                w="full"
+                rightIcon={<Icon as={FaExternalLinkAlt} />}
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "lg",
+                }}
+                transition="all 0.3s ease"
+              >
+                {ctaText}
+              </Button>
+            </>
+          )}
         </VStack>
       </CardBody>
     </Card>
@@ -282,7 +315,8 @@ export default function Services() {
                   maxW="3xl"
                   lineHeight="1.7"
                 >
-                  งานบริการภายในองค์กรของ PI โดยในงานประเภทนี้มี 2 ประเภทหลัก
+                  งานบริการภายในและภายนอกองค์กรของ PI โดยในงานประเภทนี้มี 2
+                  ประเภทหลัก
                   ที่ช่วยสร้างฐานข้อมูลและความเข้าใจเชิงลึกสำหรับการทำงานต่อไป
                 </Text>
               </VStack>
@@ -299,6 +333,8 @@ export default function Services() {
                     "นำเสนอข้อมูลในรูปแบบที่เข้าใจง่าย",
                   ]}
                   color="primary"
+                  ctaUrl="https://docs.google.com/forms/d/e/1FAIpQLSdFI-SlwO5CwVA25NfXDJcpICpcM0cG6p-xb6NVM7EMNZU73w/viewform"
+                  ctaText="ใช้บริการ"
                 />
 
                 <ServiceCard
@@ -312,6 +348,8 @@ export default function Services() {
                     "สรุปผลและนำเสนอในรูปแบบที่ชัดเจน",
                   ]}
                   color="secondary"
+                  ctaUrl="https://docs.google.com/forms/d/e/1FAIpQLSdFI-SlwO5CwVA25NfXDJcpICpcM0cG6p-xb6NVM7EMNZU73w/viewform"
+                  ctaText="ใช้บริการ"
                 />
               </SimpleGrid>
 

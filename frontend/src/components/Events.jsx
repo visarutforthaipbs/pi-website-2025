@@ -52,15 +52,17 @@ const EventCard = ({ event, variant = "default" }) => {
   const getEventTypeColor = (type) => {
     switch (type?.toLowerCase()) {
       case "workshop":
-        return "blue";
+        return "primary";
       case "seminar":
-        return "purple";
+        return "secondary";
       case "conference":
-        return "green";
+        return "accent";
       case "training":
-        return "orange";
+        return "primary";
       case "webinar":
-        return "cyan";
+        return "secondary";
+      case "meeting":
+        return "accent";
       default:
         return "primary";
     }
@@ -72,18 +74,18 @@ const EventCard = ({ event, variant = "default" }) => {
   if (variant === "featured") {
     return (
       <Card
+        bg="white"
         borderRadius="2xl"
         overflow="hidden"
-        bg="white"
-        shadow="xl"
+        boxShadow="lg"
         border="1px solid"
         borderColor="gray.100"
         _hover={{
-          transform: "translateY(-12px)",
-          shadow: "2xl",
+          transform: "translateY(-8px)",
+          boxShadow: "2xl",
           borderColor: `${colorScheme}.200`,
         }}
-        transition="all 0.4s ease"
+        transition="all 0.3s ease"
         h="full"
       >
         <Box bg={`${colorScheme}.500`} color="white" p={6}>
@@ -608,13 +610,15 @@ const Events = () => {
               <HStack spacing={4} w="full" maxW="lg">
                 <InputGroup>
                   <InputLeftElement>
-                    <Icon as={FaSearch} color="gray.400" />
+                    <Icon as={FaSearch} color="primary.400" />
                   </InputLeftElement>
                   <Input
                     placeholder="ค้นหากิจกรรม..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     borderRadius="lg"
+                    focusBorderColor="primary.500"
+                    _hover={{ borderColor: "primary.300" }}
                   />
                 </InputGroup>
               </HStack>
@@ -625,6 +629,8 @@ const Events = () => {
                   onChange={(e) => setSelectedType(e.target.value)}
                   borderRadius="lg"
                   maxW="200px"
+                  focusBorderColor="primary.500"
+                  _hover={{ borderColor: "primary.300" }}
                 >
                   <option value="all">ประเภททั้งหมด</option>
                   <option value="workshop">Workshop</option>
@@ -639,6 +645,8 @@ const Events = () => {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   borderRadius="lg"
                   maxW="200px"
+                  focusBorderColor="secondary.500"
+                  _hover={{ borderColor: "secondary.300" }}
                 >
                   <option value="upcoming">กำลังจะมาถึง</option>
                   <option value="ongoing">กำลังดำเนินการ</option>
