@@ -1,7 +1,10 @@
 // Configuration for the PI Website
 export const CONFIG = {
   // API Configuration
-  API_BASE_URL: import.meta.env.VITE_API_URL || "http://localhost:3001",
+  API_BASE_URL:
+    import.meta.env.VITE_API_BASE_URL || "https://pi-website-backend.onrender.com",
+  SITE_URL: import.meta.env.VITE_SITE_URL || "http://localhost:3000",
+
   API_ENDPOINTS: {
     PROJECTS: "/api/projects",
     WORD_CLOUD: "/api/wordclouds",
