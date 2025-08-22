@@ -130,7 +130,7 @@ const BlogCard = ({ article }) => {
             py={1}
             borderRadius="full"
           >
-            {blogService.formatDate(article.createdAt)}
+            {blogService.formatDate(article.publishAt)}
           </Badge>
 
           {/* Title */}
@@ -170,7 +170,6 @@ const BlogCard = ({ article }) => {
 
 const Blog = () => {
   const [articles, setArticles] = useState([]);
-  const [writer, setWriter] = useState(null);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -188,7 +187,6 @@ const Blog = () => {
     try {
       const data = await blogService.getBlogs(page, 12);
       setArticles(data.articles);
-      setWriter(data.writer);
       setPagination(data.pagination);
     } catch (err) {
       setError("ไม่สามารถโหลดข้อมูลบล็อกได้ กรุณาลองใหม่อีกครั้ง");
@@ -266,25 +264,6 @@ const Blog = () => {
             ติดตามบทความและเรื่องราวที่น่าสนใจจากทีมงาน PI Website
             เพื่อรับข้อมูลข่าวสารและความรู้ที่เป็นประโยชน์
           </Text>
-
-          {/* Writer Info */}
-          {writer && (
-            <HStack spacing={4} p={6} bg="white" borderRadius="xl" shadow="sm">
-              <Avatar
-                size="md"
-                src={writer.profileImage?.formats?.thumbnail?.url}
-                name={writer.name}
-              />
-              <VStack align="start" spacing={1}>
-                <Text fontWeight="bold" color="#287bbf">
-                  โดย {writer.name}
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  นักเขียน
-                </Text>
-              </VStack>
-            </HStack>
-          )}
         </VStack>
 
         {/* Articles Grid */}

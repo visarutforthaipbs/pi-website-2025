@@ -1,5 +1,5 @@
-const API_BASE_URL =
-  "https://locals.thaipbs.or.th/strapi/api/explore-writers/oafly7uyvr5v4gs2jv93tjb4";
+const API_BASE_URL = "https://locals.thaipbs.or.th/strapi/api";
+const TAG_ID = 30; // Tag ID for content filtering
 
 export const blogService = {
   /**
@@ -11,7 +11,7 @@ export const blogService = {
   async getBlogs(page = 1, pageSize = 12) {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/contents?page=${page}&pageSize=${pageSize}`,
+        `${API_BASE_URL}/contents?page=${page}&pageSize=${pageSize}&tagId=${TAG_ID}`,
         {
           method: "GET",
           headers: {
@@ -42,31 +42,33 @@ export const blogService = {
       // Transform the data to make it easier to work with
       const transformedData = {
         articles: data.data.map((article) => {
-          // Debug logging
-          console.log("Raw article coverImage:", article.coverImage);
-
           return {
             id: article.id,
             documentId: article.documentId,
             title: article.title || "ไม่มีหัวข้อ",
             slug: article.slug,
             createdAt: article.createdAt,
+            publishAt: article.publishAt, // New field from API
+            writer: article.writer || null, // Writer info
+            creatorName: article.creatorName || null, // Creator name
             coverImage: {
               // For card display, prefer smaller images for better performance
               thumbnail: article.coverImage?.formats?.thumbnail?.url || null,
               small: article.coverImage?.formats?.small?.url || null,
               medium: article.coverImage?.formats?.medium?.url || null,
+              large: article.coverImage?.formats?.large?.url || null,
               // Prioritize thumbnail for faster loading in grid view
               url:
                 article.coverImage?.formats?.thumbnail?.url ||
                 article.coverImage?.formats?.small?.url ||
                 article.coverImage?.formats?.medium?.url ||
+                article.coverImage?.formats?.large?.url ||
                 null,
               alt: article.title || "รูปภาพบทความ",
             },
           };
         }),
-        writer: data.writer || null,
+        tag: data.tag || null, // Tag information
         pagination: data.meta?.pagination || {
           page: 1,
           pageSize: pageSize,
@@ -92,18 +94,47 @@ export const blogService = {
 
   /**
    * Format date to Thai format
-   * @param {string} dateString - ISO date string
+   * @param {string} dateString - Date string (could be ISO or pre-formatted Thai)
    * @returns {string} Formatted date in Thai
    */
   formatDate(dateString) {
-    const date = new Date(dateString);
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      timeZone: "Asia/Bangkok",
-    };
-    return date.toLocaleDateString("th-TH", options);
+    // If the date string is already in Thai format, return it as is
+    if (
+      dateString &&
+      typeof dateString === "string" &&
+      (dateString.includes("สิงหาคม") ||
+        dateString.includes("กรกฎาคม") ||
+        dateString.includes("มิถุนายน") ||
+        dateString.includes("พฤษภาคม") ||
+        dateString.includes("เมษายน") ||
+        dateString.includes("มีนาคม") ||
+        dateString.includes("กุมภาพันธ์") ||
+        dateString.includes("มกราคม") ||
+        dateString.includes("ธันวาคม") ||
+        dateString.includes("พฤศจิกายน") ||
+        dateString.includes("ตุลาคม") ||
+        dateString.includes("กันยายน"))
+    ) {
+      return dateString;
+    }
+
+    // Otherwise, try to parse as ISO date and format to Thai
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString || "ไม่ระบุวันที่";
+      }
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "Asia/Bangkok",
+      };
+      return date.toLocaleDateString("th-TH", options);
+    } catch (error) {
+      console.warn("Error formatting date:", error);
+      return dateString || "ไม่ระบุวันที่";
+    }
   },
 
   /**
@@ -112,6 +143,6 @@ export const blogService = {
    * @returns {string} Full article URL
    */
   getArticleUrl(slug) {
-    return `https://locals.thaipbs.or.th/${slug}`;
+    return `https://www.thaipbs.or.th/locals/contents/${slug}`;
   },
 };
