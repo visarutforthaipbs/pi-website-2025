@@ -41,6 +41,7 @@ import {
   FaFire,
   FaTrophy,
   FaPaperPlane,
+  FaSync,
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -521,11 +522,21 @@ export default function Projects() {
     try {
       setLoading(true);
 
+      // Cache-busting headers to ensure fresh data
+      const fetchOptions = {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      };
+
       // Fetch projects, votes, and comments in parallel
       const [projectsRes, votesRes, commentsRes] = await Promise.all([
-        fetch(`${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.PROJECTS}`),
-        fetch(`${CONFIG.API_BASE_URL}/api/projects/votes/all`),
-        fetch(`${CONFIG.API_BASE_URL}/api/projects/comments/stats`),
+        fetch(`${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.PROJECTS}`, fetchOptions),
+        fetch(`${CONFIG.API_BASE_URL}/api/projects/votes/all`, fetchOptions),
+        fetch(`${CONFIG.API_BASE_URL}/api/projects/comments/stats`, fetchOptions),
       ]);
 
       if (!projectsRes.ok)
@@ -723,6 +734,24 @@ export default function Projects() {
             >
               ตัวอย่างผลงานบางส่วนของทีมเราภายใต้แนวคิดปัญญารวมหมู่
             </Text>
+
+            {/* Refresh Button */}
+            <Button
+              onClick={fetchProjectsData}
+              isLoading={loading}
+              loadingText="กำลังโหลด..."
+              leftIcon={<FaSync />}
+              colorScheme="blue"
+              variant="outline"
+              size="sm"
+              borderRadius="full"
+              _hover={{
+                bg: "#287bbf",
+                color: "white",
+              }}
+            >
+              รีเฟรชข้อมูล
+            </Button>
           </VStack>
 
           {/* Sort Options */}
