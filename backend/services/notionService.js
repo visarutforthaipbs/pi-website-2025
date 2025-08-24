@@ -139,7 +139,13 @@ class NotionService {
       votes: this.getPropertyValue(properties.Votes || properties.votes) || 0,
       createdTime: page.created_time,
       lastEditedTime: page.last_edited_time,
-      url: page.url,
+      url: this.getPropertyValue(
+        properties["Real-URL"] || 
+        properties["Real URL"] || 
+        properties.RealURL || 
+        properties["real-url"] ||
+        properties.realUrl
+      ) || page.url, // Fallback to Notion page URL if Real-URL is not available
       // Extract thumbnail/image
       thumbnail:
         this.getPropertyValue(
