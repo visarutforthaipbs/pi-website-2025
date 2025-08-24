@@ -314,23 +314,46 @@ const ProjectCard = ({
                 </HStack>
               </HStack>
 
-              <Button
-                size="sm"
-                leftIcon={<FaHeart />}
-                colorScheme={hasVoted ? "red" : "gray"}
-                variant={hasVoted ? "solid" : "ghost"}
-                onClick={handleVote}
-                borderRadius="full"
-                px={4}
-                bg={hasVoted ? "#ffb200" : "gray.100"}
-                color={hasVoted ? "white" : "gray.600"}
-                _hover={{
-                  bg: hasVoted ? "#e5a000" : "#287bbf",
-                  color: "white",
-                }}
-              >
-                {hasVoted ? "โหวตแล้ว" : "โหวต"}
-              </Button>
+              <HStack spacing={2}>
+                {/* Visit Project Button */}
+                {project.url && (
+                  <IconButton
+                    size="sm"
+                    icon={<FaExternalLinkAlt />}
+                    colorScheme="blue"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(project.url, "_blank");
+                    }}
+                    borderRadius="full"
+                    color="#287bbf"
+                    _hover={{
+                      bg: "#287bbf",
+                      color: "white",
+                    }}
+                    title="เยี่ยมชมโครงการ"
+                  />
+                )}
+
+                <Button
+                  size="sm"
+                  leftIcon={<FaHeart />}
+                  colorScheme={hasVoted ? "red" : "gray"}
+                  variant={hasVoted ? "solid" : "ghost"}
+                  onClick={handleVote}
+                  borderRadius="full"
+                  px={4}
+                  bg={hasVoted ? "#ffb200" : "gray.100"}
+                  color={hasVoted ? "white" : "gray.600"}
+                  _hover={{
+                    bg: hasVoted ? "#e5a000" : "#287bbf",
+                    color: "white",
+                  }}
+                >
+                  {hasVoted ? "โหวตแล้ว" : "โหวต"}
+                </Button>
+              </HStack>
             </HStack>
 
             {/* Project Date */}
@@ -382,20 +405,37 @@ const ProjectCard = ({
                 </Text>
               </Box>
 
-              {/* Stats */}
-              <HStack spacing={6}>
-                <HStack>
-                  <Icon as={FaThumbsUp} color="#287bbf" />
-                  <Text fontWeight="600" color="#287bbf">
-                    {votes || 0} โหวต
-                  </Text>
+              {/* Stats and Actions */}
+              <HStack spacing={6} justify="space-between" w="full">
+                <HStack spacing={6}>
+                  <HStack>
+                    <Icon as={FaThumbsUp} color="#287bbf" />
+                    <Text fontWeight="600" color="#287bbf">
+                      {votes || 0} โหวต
+                    </Text>
+                  </HStack>
+                  <HStack>
+                    <Icon as={FaComment} color="#ffb200" />
+                    <Text fontWeight="600" color="#ffb200">
+                      {projectComments.length} ความคิดเห็น
+                    </Text>
+                  </HStack>
                 </HStack>
-                <HStack>
-                  <Icon as={FaComment} color="#ffb200" />
-                  <Text fontWeight="600" color="#ffb200">
-                    {projectComments.length} ความคิดเห็น
-                  </Text>
-                </HStack>
+
+                {/* Visit Project Button */}
+                {project.url && (
+                  <Button
+                    leftIcon={<FaExternalLinkAlt />}
+                    bg="#287bbf"
+                    color="white"
+                    size="sm"
+                    onClick={() => window.open(project.url, "_blank")}
+                    _hover={{ bg: "#236ba0" }}
+                    borderRadius="full"
+                  >
+                    เยี่ยมชมโครงการ
+                  </Button>
+                )}
               </HStack>
 
               <Divider />
@@ -524,19 +564,25 @@ export default function Projects() {
 
       // Cache-busting headers to ensure fresh data
       const fetchOptions = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
       };
 
       // Fetch projects, votes, and comments in parallel
       const [projectsRes, votesRes, commentsRes] = await Promise.all([
-        fetch(`${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.PROJECTS}`, fetchOptions),
+        fetch(
+          `${CONFIG.API_BASE_URL}${CONFIG.API_ENDPOINTS.PROJECTS}`,
+          fetchOptions
+        ),
         fetch(`${CONFIG.API_BASE_URL}/api/projects/votes/all`, fetchOptions),
-        fetch(`${CONFIG.API_BASE_URL}/api/projects/comments/stats`, fetchOptions),
+        fetch(
+          `${CONFIG.API_BASE_URL}/api/projects/comments/stats`,
+          fetchOptions
+        ),
       ]);
 
       if (!projectsRes.ok)
@@ -694,219 +740,221 @@ export default function Projects() {
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="โครงการ"
         description="ชมและโหวตโครงการที่น่าสนใจจากทีม PI Thai PBS พร้อมแสดงความคิดเห็นและสนับสนุนโครงการที่คุณชื่นชอบ"
         keywords="โครงการ, โหวต, ความคิดเห็น, PI projects, Thai PBS, การพัฒนา, นวัตกรรม"
         url="/projects"
       />
-      
+
       <Box
         py={{ base: 16, md: 20 }}
         bg={useColorModeValue(
           "linear(to-b, blue.50, white)",
           "linear(to-b, gray.900, gray.800)"
         )}
-      minH="100vh"
-    >
-      <Container maxW={"7xl"}>
-        <VStack spacing={{ base: 8, md: 12 }}>
-          {/* Modern Header */}
-          <VStack spacing={6} textAlign="center">
-            <Heading
-              color={"#287bbf"}
-              fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
-              fontWeight="900"
-              lineHeight="1.1"
-              textAlign="center"
-            >
-              โปรเจค{" "}
-              <Text as="span" color="#ffb200">
-                ที่ได้ทำไป
+        minH="100vh"
+      >
+        <Container maxW={"7xl"}>
+          <VStack spacing={{ base: 8, md: 12 }}>
+            {/* Modern Header */}
+            <VStack spacing={6} textAlign="center">
+              <Heading
+                color={"#287bbf"}
+                fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                fontWeight="900"
+                lineHeight="1.1"
+                textAlign="center"
+              >
+                โปรเจค{" "}
+                <Text as="span" color="#ffb200">
+                  ที่ได้ทำไป
+                </Text>
+              </Heading>
+
+              <Text
+                color={"gray.600"}
+                fontSize={{ base: "lg", md: "xl" }}
+                maxW="3xl"
+                lineHeight="1.8"
+              >
+                ตัวอย่างผลงานบางส่วนของทีมเราภายใต้แนวคิดปัญญารวมหมู่
               </Text>
-            </Heading>
 
-            <Text
-              color={"gray.600"}
-              fontSize={{ base: "lg", md: "xl" }}
-              maxW="3xl"
-              lineHeight="1.8"
-            >
-              ตัวอย่างผลงานบางส่วนของทีมเราภายใต้แนวคิดปัญญารวมหมู่
-            </Text>
-
-            {/* Refresh Button */}
-            <Button
-              onClick={fetchProjectsData}
-              isLoading={loading}
-              loadingText="กำลังโหลด..."
-              leftIcon={<FaSync />}
-              colorScheme="blue"
-              variant="outline"
-              size="sm"
-              borderRadius="full"
-              _hover={{
-                bg: "#287bbf",
-                color: "white",
-              }}
-            >
-              รีเฟรชข้อมูล
-            </Button>
-          </VStack>
-
-          {/* Sort Options */}
-          <Stack
-            spacing={4}
-            direction={{ base: "column", md: "row" }}
-            align="center"
-            justify="center"
-          >
-            <Text color="gray.600" fontWeight="600" mb={{ base: 2, md: 0 }}>
-              เรียงตาม:
-            </Text>
-            <HStack spacing={2} flexWrap="wrap" justify="center">
-              {sortOptions.map((option) => (
-                <Button
-                  key={option.value}
-                  onClick={() => setSortBy(option.value)}
-                  variant={sortBy === option.value ? "solid" : "ghost"}
-                  bg={sortBy === option.value ? "#287bbf" : "transparent"}
-                  color={sortBy === option.value ? "white" : "#287bbf"}
-                  size="sm"
-                  borderRadius="full"
-                  px={4}
-                  leftIcon={<Icon as={option.icon} />}
-                  _hover={{
-                    bg: sortBy === option.value ? "#236ba0" : "#287bbf",
-                    color: "white",
-                  }}
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </HStack>
-          </Stack>
-
-          {/* Modern Filter Tabs */}
-          <HStack
-            spacing={4}
-            flexWrap="wrap"
-            justify="center"
-            direction={{ base: "column", sm: "row" }}
-            as={Stack}
-            w="full"
-          >
-            {filters.map((filterOption) => (
+              {/* Refresh Button */}
               <Button
-                key={filterOption.value}
-                onClick={() => setFilter(filterOption.value)}
-                variant={filter === filterOption.value ? "solid" : "ghost"}
-                bg={filter === filterOption.value ? "#ffb200" : "transparent"}
-                color={filter === filterOption.value ? "white" : "#287bbf"}
-                size="md"
+                onClick={fetchProjectsData}
+                isLoading={loading}
+                loadingText="กำลังโหลด..."
+                leftIcon={<FaSync />}
+                colorScheme="blue"
+                variant="outline"
+                size="sm"
                 borderRadius="full"
-                px={6}
-                rightIcon={
-                  <Badge
-                    bg={filter === filterOption.value ? "white" : "#ffb200"}
-                    color={filter === filterOption.value ? "#ffb200" : "white"}
-                    borderRadius="full"
-                    fontSize="xs"
-                  >
-                    {filterOption.count}
-                  </Badge>
-                }
                 _hover={{
-                  bg: filter === filterOption.value ? "#e5a000" : "#ffb200",
+                  bg: "#287bbf",
                   color: "white",
                 }}
               >
-                {filterOption.label}
+                รีเฟรชข้อมูล
               </Button>
-            ))}
-          </HStack>
+            </VStack>
 
-          {/* Projects Grid */}
-          {loading ? (
-            <ProjectsLoadingSkeleton />
-          ) : error ? (
-            <VStack spacing={4} py={20}>
-              <Text fontSize="6xl">😕</Text>
-              <Heading size="md" color="gray.600" textAlign="center">
-                เกิดข้อผิดพลาด
-              </Heading>
-              <Text color="gray.500" textAlign="center" maxW="md">
-                {error}
+            {/* Sort Options */}
+            <Stack
+              spacing={4}
+              direction={{ base: "column", md: "row" }}
+              align="center"
+              justify="center"
+            >
+              <Text color="gray.600" fontWeight="600" mb={{ base: 2, md: 0 }}>
+                เรียงตาม:
               </Text>
-              <Button
-                onClick={fetchProjectsData}
-                bg="#287bbf"
-                color="white"
-                leftIcon={<FaRocket />}
-                borderRadius="full"
-                _hover={{ bg: "#236ba0" }}
-              >
-                ลองใหม่อีกครั้ง
-              </Button>
-            </VStack>
-          ) : sortedProjects.length === 0 ? (
-            <VStack spacing={4} py={20}>
-              <Text fontSize="6xl">🔍</Text>
-              <Heading size="md" color="gray.600" textAlign="center">
-                ไม่พบโครงการ
-              </Heading>
-              <Text color="gray.500" textAlign="center" maxW="md">
-                ไม่มีโครงการในหมวดหมู่ที่คุณเลือก
-                ลองเปลี่ยนตัวกรองหรือกลับมาใหม่ทีหลัง
-              </Text>
-            </VStack>
-          ) : (
-            <SimpleGrid
-              columns={{ base: 1, md: 2, lg: 3 }}
-              spacing={8}
+              <HStack spacing={2} flexWrap="wrap" justify="center">
+                {sortOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    onClick={() => setSortBy(option.value)}
+                    variant={sortBy === option.value ? "solid" : "ghost"}
+                    bg={sortBy === option.value ? "#287bbf" : "transparent"}
+                    color={sortBy === option.value ? "white" : "#287bbf"}
+                    size="sm"
+                    borderRadius="full"
+                    px={4}
+                    leftIcon={<Icon as={option.icon} />}
+                    _hover={{
+                      bg: sortBy === option.value ? "#236ba0" : "#287bbf",
+                      color: "white",
+                    }}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </HStack>
+            </Stack>
+
+            {/* Modern Filter Tabs */}
+            <HStack
+              spacing={4}
+              flexWrap="wrap"
+              justify="center"
+              direction={{ base: "column", sm: "row" }}
+              as={Stack}
               w="full"
             >
-              {sortedProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  votes={votes[project.id] || 0}
-                  comments={comments[project.id]?.count || 0}
-                  hasVoted={userVotes.includes(project.id)}
-                  onVote={handleVote}
-                  onComment={handleComment}
-                />
+              {filters.map((filterOption) => (
+                <Button
+                  key={filterOption.value}
+                  onClick={() => setFilter(filterOption.value)}
+                  variant={filter === filterOption.value ? "solid" : "ghost"}
+                  bg={filter === filterOption.value ? "#ffb200" : "transparent"}
+                  color={filter === filterOption.value ? "white" : "#287bbf"}
+                  size="md"
+                  borderRadius="full"
+                  px={6}
+                  rightIcon={
+                    <Badge
+                      bg={filter === filterOption.value ? "white" : "#ffb200"}
+                      color={
+                        filter === filterOption.value ? "#ffb200" : "white"
+                      }
+                      borderRadius="full"
+                      fontSize="xs"
+                    >
+                      {filterOption.count}
+                    </Badge>
+                  }
+                  _hover={{
+                    bg: filter === filterOption.value ? "#e5a000" : "#ffb200",
+                    color: "white",
+                  }}
+                >
+                  {filterOption.label}
+                </Button>
               ))}
-            </SimpleGrid>
-          )}
+            </HStack>
 
-          {/* Call to Action */}
-          {!loading && !error && sortedProjects.length > 0 && (
-            <VStack spacing={6} textAlign="center" py={12}>
-              <Heading size="lg" color="#287bbf">
-                มีไอเดียโครงการเจ๋ง ๆ มั้ย? 💡
-              </Heading>
-              <Text color="gray.600" maxW="2xl">
-                เสนอโครงการของคุณและให้คนรุ่นใหม่ได้มีส่วนร่วมในการสร้างสรรค์สังคมไทยที่ดีขึ้น
-              </Text>
-              <Button
-                as={RouterLink}
-                to="/contact"
-                size="lg"
-                bg="#ffb200"
-                color="white"
-                leftIcon={<FaRocket />}
-                borderRadius="full"
-                px={8}
-                _hover={{ bg: "#e5a000" }}
+            {/* Projects Grid */}
+            {loading ? (
+              <ProjectsLoadingSkeleton />
+            ) : error ? (
+              <VStack spacing={4} py={20}>
+                <Text fontSize="6xl">😕</Text>
+                <Heading size="md" color="gray.600" textAlign="center">
+                  เกิดข้อผิดพลาด
+                </Heading>
+                <Text color="gray.500" textAlign="center" maxW="md">
+                  {error}
+                </Text>
+                <Button
+                  onClick={fetchProjectsData}
+                  bg="#287bbf"
+                  color="white"
+                  leftIcon={<FaRocket />}
+                  borderRadius="full"
+                  _hover={{ bg: "#236ba0" }}
+                >
+                  ลองใหม่อีกครั้ง
+                </Button>
+              </VStack>
+            ) : sortedProjects.length === 0 ? (
+              <VStack spacing={4} py={20}>
+                <Text fontSize="6xl">🔍</Text>
+                <Heading size="md" color="gray.600" textAlign="center">
+                  ไม่พบโครงการ
+                </Heading>
+                <Text color="gray.500" textAlign="center" maxW="md">
+                  ไม่มีโครงการในหมวดหมู่ที่คุณเลือก
+                  ลองเปลี่ยนตัวกรองหรือกลับมาใหม่ทีหลัง
+                </Text>
+              </VStack>
+            ) : (
+              <SimpleGrid
+                columns={{ base: 1, md: 2, lg: 3 }}
+                spacing={8}
+                w="full"
               >
-                เสนอโครงการ 🚀
-              </Button>
-            </VStack>
-          )}
-        </VStack>
-      </Container>
-    </Box>
+                {sortedProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    votes={votes[project.id] || 0}
+                    comments={comments[project.id]?.count || 0}
+                    hasVoted={userVotes.includes(project.id)}
+                    onVote={handleVote}
+                    onComment={handleComment}
+                  />
+                ))}
+              </SimpleGrid>
+            )}
+
+            {/* Call to Action */}
+            {!loading && !error && sortedProjects.length > 0 && (
+              <VStack spacing={6} textAlign="center" py={12}>
+                <Heading size="lg" color="#287bbf">
+                  มีไอเดียโครงการเจ๋ง ๆ มั้ย? 💡
+                </Heading>
+                <Text color="gray.600" maxW="2xl">
+                  เสนอโครงการของคุณและให้คนรุ่นใหม่ได้มีส่วนร่วมในการสร้างสรรค์สังคมไทยที่ดีขึ้น
+                </Text>
+                <Button
+                  as={RouterLink}
+                  to="/contact"
+                  size="lg"
+                  bg="#ffb200"
+                  color="white"
+                  leftIcon={<FaRocket />}
+                  borderRadius="full"
+                  px={8}
+                  _hover={{ bg: "#e5a000" }}
+                >
+                  เสนอโครงการ 🚀
+                </Button>
+              </VStack>
+            )}
+          </VStack>
+        </Container>
+      </Box>
     </>
   );
 }
