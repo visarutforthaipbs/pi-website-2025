@@ -1,5 +1,5 @@
 const API_BASE_URL = "https://locals.thaipbs.or.th/strapi/api";
-const TAG_ID = 30; // Tag ID for content filtering
+const TAG_ID = 294; // Tag ID for "PI Public Intelligence" content filtering
 
 export const blogService = {
   /**
