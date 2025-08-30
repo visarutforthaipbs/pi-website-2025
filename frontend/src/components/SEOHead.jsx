@@ -12,8 +12,8 @@ const SEOHead = ({
   const siteTitle = "PI - Public Intelligence | Thai PBS";
   const siteDescription =
     "แพลตฟอร์มการมีส่วนร่วมสาธารณะของไทยพีบีเอส สำหรับการสร้างปัญญารวมหมู่และการพัฒนาสังคม";
-  const baseUrl = "https://pi-website.vercel.app";
-  const defaultImage = "/logo/pi-website-text-logo.svg";
+  const baseUrl = "https://www.pubint.site";
+  const defaultImage = "/logo/og-thumnails.jpg";
 
   const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
   const fullDescription = description || siteDescription;

@@ -4,7 +4,7 @@ export const CONFIG = {
   API_BASE_URL:
     import.meta.env.VITE_API_BASE_URL ||
     "https://pi-website-backend.onrender.com",
-  SITE_URL: import.meta.env.VITE_SITE_URL || "http://localhost:3000",
+  SITE_URL: import.meta.env.VITE_SITE_URL || "https://www.pubint.site",
 
   API_ENDPOINTS: {
     PROJECTS: "/api/projects",
