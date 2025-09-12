@@ -316,6 +316,50 @@ app.get("/api/projects/comments/stats", async (req, res) => {
   }
 });
 
+// Image proxy endpoint for Notion images
+app.get("/api/image-proxy", async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return res.status(400).json({ error: "URL parameter is required" });
+    }
+
+    // Validate that it's a Notion S3 URL for security
+    if (!url.includes("prod-files-secure.s3.us-west-2.amazonaws.com")) {
+      return res.status(400).json({ error: "Invalid image URL" });
+    }
+
+    console.log("Proxying image:", url);
+
+    // Fetch the image from Notion
+    const imageResponse = await fetch(url);
+
+    if (!imageResponse.ok) {
+      console.error(
+        "Failed to fetch image:",
+        imageResponse.status,
+        imageResponse.statusText
+      );
+      return res.status(404).json({ error: "Image not found" });
+    }
+
+    // Set appropriate headers
+    res.set({
+      "Content-Type": imageResponse.headers.get("content-type") || "image/jpeg",
+      "Cache-Control": "public, max-age=86400", // Cache for 24 hours
+      "Access-Control-Allow-Origin": "*",
+    });
+
+    // Stream the image data
+    const buffer = await imageResponse.arrayBuffer();
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    console.error("Error proxying image:", error);
+    res.status(500).json({ error: "Failed to proxy image" });
+  }
+});
+
 // Wordcloud endpoints using MongoDB
 // GET /api/wordclouds - Fetch word cloud data
 app.get("/api/wordclouds", async (req, res) => {

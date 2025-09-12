@@ -139,15 +139,16 @@ class NotionService {
       votes: this.getPropertyValue(properties.Votes || properties.votes) || 0,
       createdTime: page.created_time,
       lastEditedTime: page.last_edited_time,
-      url: this.getPropertyValue(
-        properties["Real-URL"] || 
-        properties["Real URL"] || 
-        properties.RealURL || 
-        properties["real-url"] ||
-        properties.realUrl
-      ) || page.url, // Fallback to Notion page URL if Real-URL is not available
+      url:
+        this.getPropertyValue(
+          properties["Real-URL"] ||
+            properties["Real URL"] ||
+            properties.RealURL ||
+            properties["real-url"] ||
+            properties.realUrl
+        ) || page.url, // Fallback to Notion page URL if Real-URL is not available
       // Extract thumbnail/image
-      thumbnail:
+      thumbnail: this.processImageUrl(
         this.getPropertyValue(
           properties.Thumbnail ||
             properties.thumbnail ||
@@ -155,7 +156,8 @@ class NotionService {
             properties.image ||
             properties.Cover ||
             properties.cover
-        ) || this.getPageCover(page),
+        ) || this.getPageCover(page)
+      ),
       // Extract any additional properties
       tags: this.getPropertyValue(properties.Tags || properties.tags) || [],
       priority:
@@ -216,17 +218,19 @@ class NotionService {
   getPageCover(page) {
     if (!page?.cover) return null;
 
+    let coverUrl = null;
+
     // Handle file cover
     if (page.cover.type === "file" && page.cover.file?.url) {
-      return page.cover.file.url;
+      coverUrl = page.cover.file.url;
     }
 
     // Handle external cover
     if (page.cover.type === "external" && page.cover.external?.url) {
-      return page.cover.external.url;
+      coverUrl = page.cover.external.url;
     }
 
-    return null;
+    return coverUrl;
   }
 
   /**
@@ -411,6 +415,29 @@ class NotionService {
       console.error("Error transforming event page:", error);
       return null;
     }
+  }
+
+  /**
+   * Process image URL to use proxy for Notion images
+   * @param {string} imageUrl - Original image URL
+   * @returns {string|null} Processed image URL or null
+   */
+  processImageUrl(imageUrl) {
+    if (!imageUrl) return null;
+
+    // If it's a Notion S3 URL, proxy it through our backend
+    if (imageUrl.includes("prod-files-secure.s3.us-west-2.amazonaws.com")) {
+      // Use our image proxy endpoint
+      const baseUrl =
+        process.env.NODE_ENV === "production"
+          ? process.env.API_BASE_URL || "http://localhost:3001"
+          : "http://localhost:3001";
+
+      return `${baseUrl}/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
+    }
+
+    // Return the original URL for non-Notion images
+    return imageUrl;
   }
 }
 

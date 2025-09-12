@@ -2,7 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box, Flex } from "@chakra-ui/react";
 import { Suspense, lazy } from "react";
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from "react-helmet-async";
 import theme from "./theme";
 
 // Essential components (loaded immediately)
@@ -59,6 +59,8 @@ function App() {
                 <Route path="/budget" element={<Budget />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/wordcloud" element={<Home />} />
+                {/* Catch-all route for 404s - redirect to home */}
+                <Route path="*" element={<Home />} />
               </Routes>
             </Suspense>
           </Layout>

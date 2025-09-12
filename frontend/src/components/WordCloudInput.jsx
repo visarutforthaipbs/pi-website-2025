@@ -5,21 +5,12 @@ import {
   Button,
   VStack,
   HStack,
-  Stack,
   Text,
   useToast,
-  Badge,
-  Heading,
-  useColorModeValue,
-  Image,
-  IconButton,
-  Tooltip,
-  SimpleGrid,
   Flex,
   FormControl,
-  FormLabel,
 } from "@chakra-ui/react";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import CONFIG from "../config.js";
 
 const WordCloudInput = () => {
@@ -112,84 +103,37 @@ const WordCloudInput = () => {
     }
   };
 
-  // Get word size based on value (popularity)
+  // Get word size based on value (popularity) - Smaller sizes to prevent overlap
   const getWordSize = (value) => {
-    if (!words.length) return { fontSize: "lg", weight: "500" };
+    if (!words.length) return { fontSize: "md", weight: "500" };
 
     const maxValue = Math.max(...words.map((w) => w.value));
     const ratio = value / maxValue;
 
-    if (ratio >= 0.8) return { fontSize: "4xl", weight: "900" };
-    if (ratio >= 0.6) return { fontSize: "3xl", weight: "800" };
-    if (ratio >= 0.4) return { fontSize: "2xl", weight: "700" };
-    if (ratio >= 0.2) return { fontSize: "xl", weight: "600" };
-    return { fontSize: "lg", weight: "500" };
+    if (ratio >= 0.8) return { fontSize: "2xl", weight: "700" };
+    if (ratio >= 0.6) return { fontSize: "xl", weight: "600" };
+    if (ratio >= 0.4) return { fontSize: "lg", weight: "500" };
+    if (ratio >= 0.2) return { fontSize: "md", weight: "400" };
+    return { fontSize: "sm", weight: "400" };
   };
 
   // Get word color based on popularity
   const getWordColor = (value) => {
-    if (!words.length) return "gray.600";
+    if (!words.length) return "#287bbf";
 
     const maxValue = Math.max(...words.map((w) => w.value));
     const ratio = value / maxValue;
 
-    if (ratio >= 0.7) return "#287bbf"; // Primary blue for popular
-    if (ratio >= 0.4) return "#ffb200"; // Orange for medium
-    if (ratio >= 0.2) return "#4299e1"; // Light blue
-    return "gray.600"; // Gray for least popular
-  };
-
-  // Generate better positions for words to spread across entire space
-  const getWordPosition = (
-    index,
-    total,
-    containerWidth = 700,
-    containerHeight = 350
-  ) => {
-    // Limit the number of words displayed to prevent overcrowding
-    const maxWords = Math.min(total, 15); // Show max 15 words at once
-    if (index >= maxWords) return { x: 0, y: 0, display: false };
-
-    // Calculate grid dimensions for better distribution
-    const cols = Math.ceil(Math.sqrt(maxWords * 1.5)); // Make it slightly wider than square
-    const rows = Math.ceil(maxWords / cols);
-
-    // Calculate spacing to fill the entire container
-    const cellWidth = containerWidth / cols;
-    const cellHeight = containerHeight / rows;
-
-    // Get grid position
-    const col = index % cols;
-    const row = Math.floor(index / cols);
-
-    // Calculate base position (center of each cell)
-    const baseX = (col + 0.5) * cellWidth - containerWidth / 2;
-    const baseY = (row + 0.5) * cellHeight - containerHeight / 2;
-
-    // Add randomness within each cell for organic feel
-    const randomX = (Math.random() - 0.5) * cellWidth * 0.6; // 60% of cell width for randomness
-    const randomY = (Math.random() - 0.5) * cellHeight * 0.6; // 60% of cell height for randomness
-
-    const x = baseX + randomX;
-    const y = baseY + randomY;
-
-    return { x, y, display: true };
+    if (ratio >= 0.8) return "#287bbf"; // Blue
+    if (ratio >= 0.6) return "#38A169"; // Green
+    if (ratio >= 0.4) return "#FF8C00"; // Orange
+    return "#718096"; // Gray
   };
 
   // Get top words by value for better display
   const getDisplayWords = () => {
     const sortedWords = [...words].sort((a, b) => b.value - a.value);
     return sortedWords.slice(0, 15); // Show only top 15 words
-  };
-
-  // Shuffle words for random cloud layout
-  const shuffleWords = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
   };
 
   return (
@@ -227,74 +171,63 @@ const WordCloudInput = () => {
             )}
           </VStack>
 
-          {/* Word Cloud Container */}
+          {/* Word Cloud Container - Grid-based layout for guaranteed containment */}
           {words.length > 0 ? (
             <Box
               w="full"
-              minH={{ base: "250px", md: "400px" }}
-              position="relative"
+              minH={{ base: "250px", md: "300px" }}
               bg="gray.50"
               borderRadius="2xl"
-              p={{ base: 6, md: 12 }}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+              p={{ base: 4, md: 6 }}
+              border="1px solid"
+              borderColor="gray.200"
+              overflow="hidden"
+              position="relative"
             >
-              {/* Center container for better layout */}
-              <Box
-                position="relative"
-                w="full"
-                maxW="700px"
-                h="350px"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
+              {/* Use Flex wrap for guaranteed containment */}
+              <Flex
+                wrap="wrap"
+                justify="center"
+                align="center"
+                gap={3}
+                h="full"
+                maxH="280px"
+                overflow="hidden"
+                direction="row"
               >
                 {getDisplayWords().map((wordData, index) => {
                   const wordStyle = getWordSize(wordData.value);
                   const wordColor = getWordColor(wordData.value);
-                  const position = getWordPosition(
-                    index,
-                    getDisplayWords().length,
-                    700,
-                    350
-                  );
-
-                  // Don't render if position indicates not to display
-                  if (!position.display) return null;
 
                   return (
-                    <Box
+                    <Text
                       key={`${wordData.text}-${index}`}
-                      position="absolute"
-                      transform={`translate(${position.x}px, ${position.y}px)`}
+                      fontSize={wordStyle.fontSize}
+                      fontWeight={wordStyle.weight}
+                      color={wordColor}
+                      textAlign="center"
+                      userSelect="none"
                       cursor="pointer"
+                      px={3}
+                      py={2}
+                      borderRadius="lg"
+                      transition="all 0.3s ease"
                       _hover={{
-                        transform: `translate(${position.x}px, ${position.y}px) scale(1.1)`,
-                        zIndex: 20,
+                        color: "#287bbf",
+                        transform: "scale(1.05)",
+                        bg: "white",
+                        boxShadow: "md",
                       }}
-                      transition="all 0.4s ease"
-                      zIndex={Math.floor(wordData.value / 3) + 1}
+                      whiteSpace="nowrap"
+                      title={`${wordData.text} - ${wordData.value} เสียง`}
+                      bg="rgba(255,255,255,0.3)"
+                      backdropFilter="blur(10px)"
                     >
-                      <Text
-                        fontSize={wordStyle.fontSize}
-                        fontWeight={wordStyle.weight}
-                        color={wordColor}
-                        textAlign="center"
-                        lineHeight="1.2"
-                        userSelect="none"
-                        title={`${wordData.text} - ${wordData.value} เสียง`}
-                        _hover={{
-                          color: "#287bbf",
-                        }}
-                        whiteSpace="nowrap"
-                      >
-                        {wordData.text}
-                      </Text>
-                    </Box>
+                      {wordData.text}
+                    </Text>
                   );
                 })}
-              </Box>
+              </Flex>
 
               {/* Show indicator if there are more words */}
               {words.length > 15 && (
@@ -323,28 +256,24 @@ const WordCloudInput = () => {
               display="flex"
               alignItems="center"
               justifyContent="center"
+              p={8}
             >
-              <VStack spacing={4} textAlign="center">
-                <Text fontSize="lg" color="gray.500">
-                  ยังไม่มีข้อมูล
-                </Text>
-                <Text fontSize="sm" color="gray.400">
-                  เป็นคนแรกที่แบ่งปันความคิดเห็น!
-                </Text>
-              </VStack>
+              <Text color="gray.500" fontSize="lg" textAlign="center">
+                ยังไม่มีประเด็นในระบบ <br />
+                เป็นคนแรกที่เพิ่มประเด็นเลย!
+              </Text>
             </Box>
           )}
 
           {/* Input Form */}
-          <Box w="full" pt={4}>
+          <Box w="full" maxW="2xl">
             <form onSubmit={handleSubmit}>
-              <VStack spacing={4}>
-                <FormControl>
+              <FormControl>
+                <VStack spacing={4}>
                   <HStack
-                    direction={{ base: "column", md: "row" }}
-                    spacing={{ base: 3, md: 4 }}
+                    spacing={4}
                     w="full"
-                    as={Stack}
+                    direction={{ base: "column", md: "row" }}
                   >
                     <Input
                       value={inputValue}
@@ -379,8 +308,8 @@ const WordCloudInput = () => {
                       เพิ่ม
                     </Button>
                   </HStack>
-                </FormControl>
-              </VStack>
+                </VStack>
+              </FormControl>
             </form>
           </Box>
 

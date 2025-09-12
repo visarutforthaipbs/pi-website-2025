@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "PI Website 2025 - Frontend and Backend",
   "scripts": {
-    "build": "npm run build",
-    "start": "npm start",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm start",
     "install:frontend": "cd frontend && npm install",

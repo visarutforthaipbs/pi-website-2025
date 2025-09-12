@@ -197,6 +197,11 @@ const ProjectCard = ({
               w="full"
               h="full"
               objectFit="cover"
+              loading="lazy"
+              onError={(e) => {
+                console.log("Image failed to load:", project.thumbnail);
+                // Optional: You could trigger a refetch here
+              }}
               fallback={
                 <Flex
                   w="full"
