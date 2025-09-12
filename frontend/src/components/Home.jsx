@@ -17,6 +17,7 @@ import {
   Image,
   Skeleton,
   Avatar,
+  Link,
 } from "@chakra-ui/react";
 import {
   FaUsers,
@@ -34,6 +35,7 @@ import {
   FaMapMarkerAlt,
   FaPlay,
 } from "react-icons/fa";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FloatingShapes from "./FloatingShapes";
@@ -302,14 +304,18 @@ const BlogCard = ({ article }) => {
               </Text>
             </HStack>
             <Button
+              as={Link}
+              href={blogService.getArticleUrl(article.slug)}
+              isExternal
               size="sm"
               variant="ghost"
-              rightIcon={<FaExternalLinkAlt />}
+              rightIcon={<ExternalLinkIcon />}
               color="primary.500"
               fontWeight="600"
               _hover={{
                 color: "primary.700",
                 bg: "primary.50",
+                textDecoration: "none",
               }}
             >
               อ่านเพิ่มเติม
@@ -576,6 +582,7 @@ export default function Home() {
         response.articles?.map((article) => ({
           id: article.id,
           title: article.title,
+          slug: article.slug, // Include slug for URL generation
           description: article.excerpt || article.title, // Use excerpt or fallback to title
           thumbnail: article.coverImage?.url, // Map coverImage.url to thumbnail
           publishedAt: blogService.formatDate(article.createdAt), // Format the date
@@ -589,6 +596,7 @@ export default function Home() {
         {
           id: 1,
           title: "นวัตกรรมเทคโนโลยีเพื่อสังคม",
+          slug: "innovation-technology-society",
           description:
             "ค้นพบเทคโนโลยีใหม่ๆ ที่กำลังเปลี่ยนแปลงวิถีชีวิตของคนไทย",
           thumbnail: null,
@@ -597,6 +605,7 @@ export default function Home() {
         {
           id: 2,
           title: "การศึกษายุคดิจิทัล",
+          slug: "digital-education-era",
           description: "แนวโน้มการเรียนรู้ที่จะเปลี่ยนแปลงการศึกษาไทยในอนาคต",
           thumbnail: null,
           publishedAt: "5 วันที่แล้ว",
@@ -604,6 +613,7 @@ export default function Home() {
         {
           id: 3,
           title: "เมืองอัจฉริยะและการพัฒนาที่ยั่งยืน",
+          slug: "smart-city-sustainable-development",
           description:
             "วิสัยทัศน์การพัฒนาเมืองไทยให้เป็นเมืองอัจฉริยะที่เป็นมิตรกับสิ่งแวดล้อม",
           thumbnail: null,
