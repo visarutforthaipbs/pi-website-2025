@@ -9,8 +9,9 @@ export default defineConfig({
     open: true,
     proxy: {
       "/api": {
-        target: "http://localhost:3001",
+        target: "https://pi-website-backend.onrender.com",
         changeOrigin: true,
+        secure: true,
       },
     },
   },

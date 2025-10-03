@@ -1,9 +1,11 @@
 // Configuration for the PI Website
 export const CONFIG = {
   // API Configuration
+  // In development, use empty string to make requests relative (so Vite proxy works)
+  // In production, use the full backend URL
   API_BASE_URL:
     import.meta.env.VITE_API_BASE_URL ||
-    "https://pi-website-backend.onrender.com",
+    (import.meta.env.DEV ? "" : "https://pi-website-backend.onrender.com"),
   SITE_URL: import.meta.env.VITE_SITE_URL || "https://www.pubint.site",
 
   API_ENDPOINTS: {

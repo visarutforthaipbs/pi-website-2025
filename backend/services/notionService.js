@@ -427,13 +427,9 @@ class NotionService {
 
     // If it's a Notion S3 URL, proxy it through our backend
     if (imageUrl.includes("prod-files-secure.s3.us-west-2.amazonaws.com")) {
-      // Use our image proxy endpoint
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? process.env.API_BASE_URL || "http://localhost:3001"
-          : "http://localhost:3001";
-
-      return `${baseUrl}/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
+      // Return relative URL so frontend's Vite proxy can handle it in development
+      // In production, this will go directly to the backend
+      return `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
     }
 
     // Return the original URL for non-Notion images
