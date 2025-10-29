@@ -8,10 +8,19 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
+      // Proxy API requests to backend
       "/api": {
         target: "https://pi-website-backend.onrender.com",
         changeOrigin: true,
         secure: true,
+      },
+      // Proxy backend image proxy requests (for when backend returns full URLs)
+      "^/https://pi-website-backend.onrender.com/.*": {
+        target: "https://pi-website-backend.onrender.com",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) =>
+          path.replace(/^\/https:\/\/pi-website-backend\.onrender\.com/, ""),
       },
     },
   },
